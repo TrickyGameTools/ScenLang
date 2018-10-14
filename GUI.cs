@@ -1,12 +1,33 @@
 ﻿using System;
+using System.Reflection;
+using System.Collections.Generic;
 using Gtk;
 using TrickyUnits;
+using TrickyUnits.GTK;
 
 namespace ScenLang
 {
     static class GUI
     {
         public static MainWindow win;
+        static VBox mainbox;
+        static HBox submainbox;
+        static TextView statusconsole;
+        static ListBox entrylist;
+        static Image mascot;
+        static HBox headbox;
+        static HBox editbox;
+        static ListBox taglist;
+        static Entry enPicDir;
+        static Entry enPicSpecific;
+        static Entry enAltFont;
+        static CheckButton tbAllowTrim;
+        static CheckButton tbNameLinking;
+
+        static public bool NameLinking { get => tbNameLinking.Active; }
+
+        static List<Widget> requiretag = new List<Widget>();
+        static List<Widget> requirefile = new List<Widget>();
 
         static public Gdk.Color RGB(byte R, byte G, byte B) => new Gdk.Color(R, G, B);
 
@@ -14,6 +35,167 @@ namespace ScenLang
             win = new MainWindow();
             win.Title = $"ScenLang {MKL.Newest}";
             win.ModifyBg(StateType.Normal, RGB(18, 0, 25));
+            win.SetSizeRequest(1200, 1000);
+        }
+
+        static void CreateMainBox(){
+            mainbox = new VBox();
+            win.Add(mainbox);
+        }
+
+        static public void Write(string txt) {
+            statusconsole.Buffer.Text += txt;
+        }
+
+        static public void WriteLn(string txt) => Write($"{txt}\n");
+
+        static void CreateSubMainBox(){
+            submainbox = new HBox();
+            statusconsole = new TextView();
+            WriteLn($"ScenLang v{MKL.Newest}");
+            WriteLn("Coded by: Tricky");
+            WriteLn("(c) Jeroen P. Broks, released under the terms of the GPL");
+            statusconsole.SetSizeRequest(win.WidthRequest, 250);
+            statusconsole.Editable = false;
+            statusconsole.ModifyText(StateType.Normal, RGB(250, 180, 0));
+            statusconsole.ModifyBase(StateType.Normal,RGB(25, 18, 0));
+            mainbox.Add(submainbox);
+            mainbox.Add(statusconsole);
+        }
+
+        static void CreateEntryList(){
+            entrylist = new ListBox("Entries");
+            entrylist.SetSizeRequest(230,submainbox.HeightRequest-314);
+            Assembly asm = Assembly.GetExecutingAssembly();
+            System.IO.Stream stream;
+            //= asm.GetManifestResourceStream("MyData.Properties.Icon.png");
+            //Gdk.Pixbuf PIX = new Gdk.Pixbuf(stream);
+            //win.Icon = PIX;
+            //stream.Dispose();
+            stream = asm.GetManifestResourceStream("ScenLang.Assets.Mascot.png");
+            mascot = new Image(stream);
+            mascot.SetAlignment(0, 2);
+            stream.Dispose();
+            var sw = new ScrolledWindow();
+            sw.SetSizeRequest(230, submainbox.HeightRequest - 314);
+            sw.Add(entrylist.Gadget);
+            var lb = new VBox();
+            lb.Add(sw);
+            lb.Add(mascot);
+            submainbox.Add(lb);
+        }
+
+        static void CreateEditMain(){
+            headbox = new HBox();
+            editbox = new HBox();
+            var mb = new VBox();
+            mb.Add(headbox);
+            mb.Add(editbox);
+            submainbox.Add(mb);
+        }
+
+        static void CreateHeadbox(){
+            var sw = new ScrolledWindow();
+            sw.SetSizeRequest(150, 400);
+            taglist = new ListBox("Tags");
+            sw.Add(taglist.Gadget);
+            headbox.Add(sw);
+            var sdata = new VBox();
+            // Picture dir
+            var bxPicDir = new HBox();
+            var lbPicDir = new Label("Picture Dir:");
+            enPicDir = new Entry();
+            enPicDir.Changed += Callback.EditPicDir;
+            enPicDir.ModifyBase(StateType.Normal, RGB(0, 25, 0));
+            enPicDir.ModifyText(StateType.Normal, RGB(180, 255, 0));
+            enPicDir.ModifyBase(StateType.Insensitive, RGB(0, 18, 0));
+            enPicDir.ModifyText(StateType.Insensitive, RGB(100, 120, 0));
+            lbPicDir.SetAlignment((float).95, (float).5);
+            lbPicDir.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            lbPicDir.SetSizeRequest(200, 20);
+            enPicDir.SetSizeRequest(200, 20);
+            bxPicDir.Add(lbPicDir);
+            bxPicDir.Add(enPicDir);
+            requiretag.Add(enPicDir);
+
+            // Specific Picture
+            var bxPicSpecific = new HBox();
+            var lbPicSpecific = new Label("Specific Picture:");
+            enPicSpecific = new Entry();
+            enPicSpecific.Changed += Callback.EditPicSpecific;
+            enPicSpecific.ModifyBase(StateType.Normal, RGB(0, 25, 0));
+            enPicSpecific.ModifyText(StateType.Normal, RGB(180, 255, 0));
+            enPicSpecific.ModifyBase(StateType.Insensitive, RGB(0, 18, 0));
+            enPicSpecific.ModifyText(StateType.Insensitive, RGB(100, 120, 0));
+            lbPicSpecific.SetAlignment((float).95, (float).5);
+            lbPicSpecific.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            lbPicSpecific.SetSizeRequest(200, 20);
+            enPicSpecific.SetSizeRequest(200, 20);
+            bxPicSpecific.Add(lbPicSpecific);
+            bxPicSpecific.Add(enPicSpecific);
+            requiretag.Add(enPicSpecific);
+
+            // Allow Trimming
+            var bxAllowTrim = new HBox();
+            var lbAllowTrim = new Label("Allow Trimming:");
+            tbAllowTrim = new CheckButton("Yes");
+            tbAllowTrim.Clicked += Callback.EditAllowTrim;
+            lbAllowTrim.SetAlignment((float).95, (float).5);
+            lbAllowTrim.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            tbAllowTrim.Child.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            tbAllowTrim.Child.ModifyFg(StateType.Selected, RGB(190, 0, 255));
+            tbAllowTrim.Child.ModifyFg(StateType.Active, RGB(190, 0, 255));
+            tbAllowTrim.Child.ModifyFg(StateType.Insensitive, RGB(100, 0, 155));
+            tbAllowTrim.Child.ModifyFg(StateType.Prelight, RGB(255, 0, 255));
+            lbAllowTrim.SetSizeRequest(200, 20);
+            tbAllowTrim.SetSizeRequest(200, 20);
+            bxAllowTrim.Add(lbAllowTrim);
+            bxAllowTrim.Add(tbAllowTrim);
+            requiretag.Add(tbAllowTrim);
+
+            // Name Linking
+            var bxNameLinking = new HBox();
+            var lbNameLinking = new Label("Name Linking:");
+            tbNameLinking = new CheckButton("Yes");
+            tbNameLinking.Clicked += Callback.EditNameLinking;
+            lbNameLinking.SetAlignment((float).95, (float).5);
+            lbNameLinking.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            tbNameLinking.Child.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            tbNameLinking.Child.ModifyFg(StateType.Selected, RGB(190, 0, 255));
+            tbNameLinking.Child.ModifyFg(StateType.Active, RGB(190, 0, 255));
+            tbNameLinking.Child.ModifyFg(StateType.Insensitive, RGB(100, 0, 155));
+            tbNameLinking.Child.ModifyFg(StateType.Prelight, RGB(255, 0, 255));
+            lbNameLinking.SetSizeRequest(200, 20);
+            tbNameLinking.SetSizeRequest(200, 20);
+            bxNameLinking.Add(lbNameLinking);
+            bxNameLinking.Add(tbNameLinking);
+            requiretag.Add(tbNameLinking);
+
+            // Alternate Font
+            var bxAltFont = new HBox();
+            var lbAltFont = new Label("Alternate Font:");
+            enAltFont = new Entry();
+            enAltFont.Changed += Callback.EditAltFont;
+            enAltFont.ModifyBase(StateType.Normal, RGB(0, 25, 0));
+            enAltFont.ModifyText(StateType.Normal, RGB(180, 255, 0));
+            enAltFont.ModifyBase(StateType.Insensitive, RGB(0, 18, 0));
+            enAltFont.ModifyText(StateType.Insensitive, RGB(100, 120, 0));
+            lbAltFont.SetAlignment((float).95, (float).5);
+            lbAltFont.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            lbAltFont.SetSizeRequest(200, 20);
+            enAltFont.SetSizeRequest(200, 20);
+            bxAltFont.Add(lbAltFont);
+            bxAltFont.Add(enAltFont);
+            requiretag.Add(enAltFont);
+
+
+            // Merge it all together
+            sdata.Add(bxPicDir);
+            sdata.Add(bxPicSpecific);
+            sdata.Add(bxAllowTrim);
+            sdata.Add(bxNameLinking);
+            sdata.Add(bxAltFont);
+            headbox.Add(sdata);
         }
 
         public static void init(string[] args)
@@ -21,7 +203,12 @@ namespace ScenLang
             MKL.Version("","");
             MKL.Lic("", "");
             Application.Init();
-            //CreateWindow();
+            CreateWindow();
+            CreateMainBox();
+            CreateSubMainBox();
+            CreateEntryList();
+            CreateEditMain();
+            CreateHeadbox();
         }
 
 
