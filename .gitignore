@@ -39,3 +39,7 @@ Thumbs.db
 
 # dotCover
 *.dotCover
+
+
+# Mascot
+Assets/Mascot.png
