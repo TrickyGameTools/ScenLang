@@ -32,14 +32,14 @@ namespace ScenLang{
 
     class DataTextbox{
         // The int in the dictionaries is the language ID, not the page number!
-        public Dictionary<int, string> Head;
-        public Dictionary<int, string> Content;
+        public Dictionary<int, string> Head = new Dictionary<int, string>();
+        public Dictionary<int, string> Content = new Dictionary<int, string>();
     }
 
     class DataTag{
-        public string Picture;
-        public string PictureSpecific;
-        public string AltFont;
+        public string Picture="";
+        public string PictureSpecific="";
+        public string AltFont="";
         public bool AllowTrim = true;
         public bool NameLinking = true;
         // And in this dictionary the 'int' is the page number... Seems odd, but is not as odd as it seems.
@@ -47,6 +47,7 @@ namespace ScenLang{
     }
 
     class DataEntry{
+        public DataEntry() => Console.WriteLine($"Created new entry"); // debug
         public Dictionary<string, DataTag> Tags = new Dictionary<string, DataTag>();
     }
 
@@ -63,6 +64,7 @@ namespace ScenLang{
         static string[] languages;
         static string[] _entries;
         static TJCRDIR[] JCR;
+        static TJCRDIR PriJCR { get => JCR[0]; }
         static Dictionary<string, DataEntry> Entry = new Dictionary<string, DataEntry>();
 
         /// <summary>
@@ -106,6 +108,9 @@ namespace ScenLang{
                 if (!GUI.Assert(JCR[i] !=null, $"JCR6 ERROR\n{JCR6.JERROR}")) return;
             }
             if (updategui) GUI.ListEntries(Entries);
+            foreach(string ekey in Entries){
+                Entry[ekey] = new DataEntry();
+            }
         }
 
         static public void LoadProject(string GINIFile)
