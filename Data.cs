@@ -36,6 +36,7 @@ namespace ScenLang
         static string _project;
         static public bool Loaded => MainConfig != null;
         static public string Project { get => _project; }
+        static string[] languages;
 
         static Data()
         {
@@ -57,6 +58,31 @@ namespace ScenLang
         {
             MainConfig = GINI.ReadFromFile(GINIFile);
             _project = GINIFile;
+        }
+
+        static public int NumLanguages{ get {
+                int ret=0;
+                while (MainConfig.C($"Lang{ret + 1}.Name") != "") {
+                    GUI.Assert(MainConfig.C($"Lang{ret}.File") != "", $"No file for language #{ret}");
+                    ret++;
+                }
+                languages = new string[ret];
+                for (int i = 0; i < ret; i++) languages[i] = MainConfig.C($"Lang{i + 1}.Name");
+                return ret;
+            }
+        }
+
+        static public string LanguagePure(int i) {
+            GUI.Assert(i > 0 && i < languages.Length, "Language index out of range!");
+            return languages[i];
+        }
+
+        static public string Language(int i) => LanguagePure(i - 1);
+
+        static string Config(string key, bool crash=false){
+            var ret = MainConfig.C(key);
+            GUI.Assert((!crash) || ret != "", $"Project config needed key {key}, but it's either empty or not defined at all.");
+            return ret;
         }
     }
 }
