@@ -50,6 +50,7 @@ namespace ScenLang
         static CheckButton tbNameLinking;
 
         static public bool NameLinking { get => tbNameLinking.Active; }
+        static bool failquit;
 
         static List<Widget> requiretag = new List<Widget>();
         static List<Widget> requirefile = new List<Widget>();
@@ -223,12 +224,22 @@ namespace ScenLang
             headbox.Add(sdata);
         }
 
+        public static void Fail(string message){
+            QuickGTK.Error($"FAILURE!\n\n{message}");
+            success = false;
+            if (failquit) Application.Quit();
+        }
+
+        public static void Assert(bool condition,string error){
+            if (!condition) Fail(error);
+        }
+
         public static void init(string[] args)
         {
             MKL.Version("Scenario Language - GUI.cs","18.10.15");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
-            Data.LoadFromArgs(args); if (!Data.Loaded) { TrickyUnits.GTK.QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
+            Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
             success = true;
             CreateWindow();
             CreateMainBox();
@@ -245,8 +256,11 @@ namespace ScenLang
             if (success)
             {
                 Console.WriteLine($"Running project: {Data.Project}");
+                failquit = true;
                 win.ShowAll();
                 Application.Run();
+            } else {
+                Application.Quit();
             }
         }
     }
