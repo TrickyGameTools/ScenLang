@@ -234,6 +234,10 @@ namespace ScenLang
             if (!condition) Fail(error);
         }
 
+        public static void CreateEditBoxes(){
+
+        }
+
         public static void init(string[] args)
         {
             MKL.Version("Scenario Language - GUI.cs","18.10.15");
@@ -247,6 +251,7 @@ namespace ScenLang
             CreateEntryList();
             CreateEditMain();
             CreateHeadbox();
+            CreateEditBoxes();
         }
 
 
