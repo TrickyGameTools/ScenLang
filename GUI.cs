@@ -57,6 +57,13 @@ namespace ScenLang
 
         static public Gdk.Color RGB(byte R, byte G, byte B) => new Gdk.Color(R, G, B);
 
+        static readonly Dictionary<Widget, int> WidgetIndexes = new Dictionary<Widget, int>();
+
+        static public int GetIndex(Widget w) {
+            Assert(WidgetIndexes.ContainsKey(w), "Widget index failure. Unable to grasp the widget's index!");
+            return WidgetIndexes[w];
+        }
+
         static void CreateWindow(){
             win = new MainWindow();
             win.Title = $"ScenLang {MKL.Newest}";
