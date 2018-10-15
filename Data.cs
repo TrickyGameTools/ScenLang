@@ -73,6 +73,7 @@ namespace ScenLang
         }
 
         static public string LanguagePure(int i) {
+            if (languages == null) { var oh = NumLanguages; }
             GUI.Assert(i > 0 && i < languages.Length, "Language index out of range!");
             return languages[i];
         }
