@@ -58,6 +58,7 @@ namespace ScenLang
         static public Gdk.Color RGB(byte R, byte G, byte B) => new Gdk.Color(R, G, B);
 
         static readonly Dictionary<Widget, int> WidgetIndexes = new Dictionary<Widget, int>();
+        static int NumLangs; // used in order not having to scan this all the time.
 
         static public int GetIndex(Widget w) {
             Assert(WidgetIndexes.ContainsKey(w), "Widget index failure. Unable to grasp the widget's index!");
