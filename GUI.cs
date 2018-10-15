@@ -49,6 +49,9 @@ namespace ScenLang
         static CheckButton tbAllowTrim;
         static CheckButton tbNameLinking;
 
+        static Entry[] EntryHead;
+        static TextView[] EntryText;
+
         static public bool NameLinking { get => tbNameLinking.Active; }
         static bool failquit;
 
@@ -243,7 +246,62 @@ namespace ScenLang
         }
 
         public static void CreateEditBoxes(){
+            NumLangs = Data.NumLanguages;
+            Assert(NumLangs > 0, "No languages to work with! Hey! What's that?");
+            if (!success) return;
+            EntryHead = new Entry[NumLangs];
+            EntryText = new TextView[NumLangs];
+            for (int i = 0; i < NumLangs;i++){
+                // Creation language widgets
+                var box = new VBox();
+                var kop =  new Label(Data.LanguagePure(i));
+                var hlab = new Label("Header:");
+                var tlab = new Label("Text:");
+                var hbox = new HBox();
+                var tbox = new HBox();
+                var hwid = new Entry(); EntryHead[i] = hwid;
+                var twid = new TextView(); EntryText[i] = twid;
+                var tscr = new ScrolledWindow();
 
+                // Configure language widgets
+                kop.ModifyFg(StateType.Normal, RGB(180,0, 255));
+                hlab.ModifyFg(StateType.Normal, RGB(180,0 ,255));
+                tlab.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+                hwid.ModifyBase(StateType.Normal, RGB(0,18, 25));
+                hwid.ModifyText(StateType.Normal, RGB(0,180, 255));
+                hwid.ModifyBase(StateType.Insensitive, RGB(0,18, 25));
+                hwid.ModifyText(StateType.Insensitive, RGB(0,20, 30));
+                twid.ModifyBase(StateType.Normal, RGB(25, 0, 0));
+                twid.ModifyText(StateType.Normal, RGB(255, 0, 0));
+                twid.ModifyBase(StateType.Insensitive, RGB(25, 0, 0));
+                twid.ModifyText(StateType.Insensitive, RGB(30, 0, 0));
+                box.SetSizeRequest(200, 400);
+                kop.SetSizeRequest(200, 30);
+                hbox.SetSizeRequest(200, 30);
+                tbox.SetSizeRequest(200, 340);
+                hlab.SetSizeRequest(60, 30);
+                tlab.SetSizeRequest(60, 340);
+                hwid.SetSizeRequest(140, 28);
+                tscr.SetSizeRequest(140, 340);
+
+
+
+                // Callback language widgets
+                hwid.Changed += Callback.EditLHead;
+                twid.Buffer.Changed += Callback.EditLText;
+
+                // Merge it all together
+                hbox.Add(hlab);
+                hbox.Add(hwid);
+                tbox.Add(tlab);
+                tscr.Add(twid);
+                tbox.Add(tscr);
+                box.Add(kop);
+                box.Add(hbox);
+                box.Add(tbox);
+                editbox.Add(box);
+
+            }
         }
 
         public static void init(string[] args)
