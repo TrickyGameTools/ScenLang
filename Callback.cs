@@ -33,5 +33,8 @@ namespace ScenLang
         public static void EditAltFont(object sender, EventArgs arg) { }
         public static void EditAllowTrim(object sender, EventArgs arg){ }
         public static void EditNameLinking(object sender, EventArgs arg) { }
+
+        public static void EditLHead(object sender,EventArgs arg){ }
+        public static void EditLText(object sender,EventArgs arg){ }
     }
 }
