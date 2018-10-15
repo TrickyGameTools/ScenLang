@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle("ScenLang")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Scenario Langage editor for scenario driven games")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
