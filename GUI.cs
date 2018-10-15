@@ -33,7 +33,8 @@ namespace ScenLang
 {
     static class GUI
     {
-        public static MainWindow win;
+        static MainWindow win;
+        static bool success;
         static VBox mainbox;
         static HBox submainbox;
         static TextView statusconsole;
@@ -78,7 +79,7 @@ namespace ScenLang
             statusconsole = new TextView();
             WriteLn($"ScenLang v{MKL.Newest}");
             WriteLn("Coded by: Tricky");
-            WriteLn("(c) Jeroen P. Broks, released under the terms of the GPL");
+            WriteLn($"(c) Jeroen P. Broks, 2015-20{qstr.Left(MKL.Newest,2)} released under the terms of the GPL");
             statusconsole.SetSizeRequest(win.WidthRequest, 250);
             statusconsole.Editable = false;
             statusconsole.ModifyText(StateType.Normal, RGB(250, 180, 0));
@@ -227,6 +228,8 @@ namespace ScenLang
             MKL.Version("Scenario Language - GUI.cs","18.10.15");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
+            Data.LoadFromArgs(args); if (!Data.Loaded) { TrickyUnits.GTK.QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
+            success = true;
             CreateWindow();
             CreateMainBox();
             CreateSubMainBox();
@@ -238,8 +241,13 @@ namespace ScenLang
 
         public static void run()
         {
-            win.ShowAll();
-            Application.Run();
+            Console.WriteLine($"ScenLang {MKL.Newest}\n(c) Jeroen P. Broks\nReleased under the terms of the GPL version 3\n\n{MKL.All()}");
+            if (success)
+            {
+                Console.WriteLine($"Running project: {Data.Project}");
+                win.ShowAll();
+                Application.Run();
+            }
         }
     }
 }
