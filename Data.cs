@@ -24,21 +24,39 @@
 // EndLic
 ﻿using System;
 using TrickyUnits;
+using TrickyUnits.GTK;
 namespace ScenLang
 {
+    /// <summary>
+    /// This class contains all the data and functions to manipulate them.
+    /// </summary>
     static public class Data
     {
+        static TGINI MainConfig;
+        static string _project;
+        static public bool Loaded => MainConfig != null;
+        static public string Project { get => _project; }
+
         static Data()
         {
             MKL.Lic    ("Scenario Language - Data.cs","GNU General Public License 3");
             MKL.Version("Scenario Language - Data.cs","18.10.15");
         }
 
+        static public void LoadFromArgs(string[] args){
+            if (args.Length > 0)
+                LoadProject(args[0]);
+            else {
+                var prj = QuickGTK.RequestFile("Please choose a project file:");
+                if (prj != "") LoadProject(prj);
+            }
+
+        }
 
         static public void LoadProject(string GINIFile)
         {
-
-
+            MainConfig = GINI.ReadFromFile(GINIFile);
+            _project = GINIFile;
         }
     }
 }
