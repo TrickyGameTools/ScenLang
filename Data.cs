@@ -63,8 +63,8 @@ namespace ScenLang
         static public int NumLanguages{ get {
                 int ret=0;
                 while (MainConfig.C($"Lang{ret + 1}.Name") != "") {
-                    GUI.Assert(MainConfig.C($"Lang{ret}.File") != "", $"No file for language #{ret}");
                     ret++;
+                    GUI.Assert(MainConfig.C($"Lang{ret}.File") != "", $"No file for language #{ret}");
                 }
                 languages = new string[ret];
                 for (int i = 0; i < ret; i++) languages[i] = MainConfig.C($"Lang{i + 1}.Name");
@@ -74,7 +74,7 @@ namespace ScenLang
 
         static public string LanguagePure(int i) {
             if (languages == null) { var oh = NumLanguages; }
-            GUI.Assert(i > 0 && i < languages.Length, "Language index out of range!");
+            GUI.Assert(i >= 0 && i < languages.Length, $"Language index out of range! ({i}/{languages.Length})");
             return languages[i];
         }
 
