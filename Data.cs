@@ -25,8 +25,32 @@
 ﻿using System;
 using TrickyUnits;
 using TrickyUnits.GTK;
-namespace ScenLang
-{
+using UseJCR6;
+using System.Collections.Generic;
+
+namespace ScenLang{
+
+    class DataTextbox{
+        // The int in the dictionaries is the language ID, not the page number!
+        public Dictionary<int, string> Head;
+        public Dictionary<int, string> Content;
+    }
+
+    class DataTag{
+        public string Picture;
+        public string PictureSpecific;
+        public string AltFont;
+        public bool AllowTrim = true;
+        public bool NameLinking = true;
+        // And in this dictionary the 'int' is the page number... Seems odd, but is not as odd as it seems.
+        public Dictionary<int, DataTextbox> TextBox = new Dictionary<int, DataTextbox>();
+    }
+
+    class DataEntry{
+        public Dictionary<string, DataTag> Tags = new Dictionary<string, DataTag>();
+    }
+
+
     /// <summary>
     /// This class contains all the data and functions to manipulate them.
     /// </summary>
@@ -37,6 +61,28 @@ namespace ScenLang
         static public bool Loaded => MainConfig != null;
         static public string Project { get => _project; }
         static string[] languages;
+        static string[] _entries;
+        static TJCRDIR[] JCR;
+        static Dictionary<string, DataEntry> Entry = new Dictionary<string, DataEntry>();
+
+        /// <summary>
+        /// The only reason this was added the way it is, is because the guys at Microsoft are completely demented and will not allow me to do this the CLEAN and QUICK way as that will cause the C# compiler to throw errors for reasons that do not exist, but C# only makes them exist for intentions that are beyond any brain of INTELLIGENT human beings!
+        /// </summary>
+        /// <value>The entries.</value>
+        static public string[] Entries { get {
+                if (_entries!=null) return _entries;
+                var J = JCR[0];
+                var n = J.CountEntries;
+                var ret = new string[n];
+                var i = -1;
+                foreach(string k in J.Entries.Keys) {
+                    i++;
+                    ret[i] = k;
+                }
+                _entries = ret;
+                return ret;
+            }
+        }
 
         static Data()
         {
@@ -54,14 +100,25 @@ namespace ScenLang
 
         }
 
+        static void JCR_Reload(bool updategui=true){
+            for (int i = 0; i < NumLanguages;i++){
+                JCR[i] = JCR6.Dir(Config($"Lang{i+1}.File",true));
+                if (!GUI.Assert(JCR[i] !=null, $"JCR6 ERROR\n{JCR6.JERROR}")) return;
+            }
+            if (updategui) GUI.ListEntries(Entries);
+        }
+
         static public void LoadProject(string GINIFile)
         {
             MainConfig = GINI.ReadFromFile(GINIFile);
             _project = GINIFile;
+            JCR = new TJCRDIR[NumLanguages];
+            JCR_Reload(false);
         }
 
         static public int NumLanguages{ get {
                 int ret=0;
+                if (languages != null) return languages.Length;
                 while (MainConfig.C($"Lang{ret + 1}.Name") != "") {
                     ret++;
                     GUI.Assert(MainConfig.C($"Lang{ret}.File") != "", $"No file for language #{ret}");

@@ -91,7 +91,7 @@ namespace ScenLang
             statusconsole = new TextView();
             WriteLn($"ScenLang v{MKL.Newest}");
             WriteLn("Coded by: Tricky");
-            WriteLn($"(c) Jeroen P. Broks, 2015-20{qstr.Left(MKL.Newest,2)} released under the terms of the GPL");
+            WriteLn($"(c) Jeroen P. Broks, 2015-20{qstr.Left(MKL.Newest,2)} released under the terms of the GPL\n\nProject: {Data.Project}");
             statusconsole.SetSizeRequest(win.WidthRequest, 250);
             statusconsole.Editable = false;
             statusconsole.ModifyText(StateType.Normal, RGB(250, 180, 0));
@@ -235,14 +235,20 @@ namespace ScenLang
             headbox.Add(sdata);
         }
 
+        public static void ListEntries(string[] l){
+            entrylist.Clear();
+            foreach (string key in l) entrylist.AddItem(key);
+        }
+
         public static void Fail(string message){
             QuickGTK.Error($"FAILURE!\n\n{message}");
             success = false;
             if (failquit) Application.Quit();
         }
 
-        public static void Assert(bool condition,string error){
+        public static bool Assert(bool condition,string error){
             if (!condition) Fail(error);
+            return condition;
         }
 
         public static void CreateEditBoxes(){
@@ -304,6 +310,7 @@ namespace ScenLang
             }
         }
 
+
         public static void init(string[] args)
         {
             MKL.Version("Scenario Language - GUI.cs","18.10.15");
@@ -311,6 +318,7 @@ namespace ScenLang
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
             success = true;
+            // Creation
             CreateWindow();
             CreateMainBox();
             CreateSubMainBox();
@@ -318,6 +326,10 @@ namespace ScenLang
             CreateEditMain();
             CreateHeadbox();
             CreateEditBoxes();
+
+            // Base values
+            ListEntries(Data.Entries);
+
         }
 
 

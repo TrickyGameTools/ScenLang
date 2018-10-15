@@ -24,6 +24,7 @@
 // EndLic
 ﻿using System;
 using TrickyUnits;
+using UseJCR6;
 namespace ScenLang
 {
     public class SLMain
@@ -32,6 +33,8 @@ namespace ScenLang
         {
             MKL.Version("Scenario Language - Main.cs","18.10.15");
             MKL.Lic    ("Scenario Language - Main.cs","GNU General Public License 3");
+            JCR6_zlib.Init();
+            JCR6_lzma.Init();
             GUI.init(args);
             GUI.run();
         }
