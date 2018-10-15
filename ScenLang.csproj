@@ -86,6 +86,7 @@
       <Link>Dependencies\TrickyUnits\gtk\QuickGTK.cs</Link>
     </Compile>
     <Compile Include="Callback.cs" />
+    <Compile Include="Data.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />
