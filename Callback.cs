@@ -38,7 +38,7 @@ namespace ScenLang
             var p = (Entry)sender;
             var dp = (DataTextbox)Data.ChosenTextBox();
             dp.Picture = p.Text;
-            if dp.AllowTrim dp.Picture = dp.Picture.Trim();
+            if (dp.AllowTrim) dp.Picture = dp.Picture.Trim();
             if (dontlink || (!dp.NameLinking)) return;
             dontlink = true;
             foreach (Entry e in GUI.EntryHead) e.Text = p.Text;
@@ -72,7 +72,22 @@ namespace ScenLang
             dp.NameLinking = p.Active;
         }
 
-        public static void EditLHead(object sender,EventArgs arg){ }
+        public static void EditLHead(object sender,EventArgs arg){
+            if (dontedit) return;
+            var w = (Widget)sender;
+            var i = GUI.GetIndex(w);
+            var p = (Entry)sender;
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.Head[i] = p.Text;
+            if (dp.AllowTrim) dp.Head[i] = dp.Head[i];
+            if (dontlink || (!dp.NameLinking)) return;
+            dontlink = true;
+            GUI.enPicDir.Text = p.Text;
+            for (int j = 0; j < GUI.EntryHead.Length;j++){
+                if (j != i) GUI.EntryHead[j].Text = p.Text;
+            }
+            dontlink = false;
+        }
         public static void EditLText(object sender,EventArgs arg){ }
 
 

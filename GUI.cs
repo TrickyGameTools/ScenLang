@@ -343,6 +343,9 @@ namespace ScenLang
                 hwid.SetSizeRequest(140, 28);
                 tscr.SetSizeRequest(140, 340);
 
+                // Indexer
+                WidgetIndexes[hwid] = i;
+                WidgetIndexes[twid] = i;
 
 
                 // Callback language widgets
