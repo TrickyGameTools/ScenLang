@@ -23,6 +23,8 @@
 // Version: 18.10.17
 // EndLic
 ﻿using System;
+using TrickyUnits;
+using TrickyUnits.GTK;
 namespace ScenLang
 {
     static class Callback
@@ -43,5 +45,13 @@ namespace ScenLang
             GUI.UpdateTagList();
             GUI.AutoEnable();
         }
+
+        public static void IMKL()
+        {
+            MKL.Version("Scenario Language - Callback.cs","18.10.17");
+            MKL.Lic    ("Scenario Language - Callback.cs","GNU General Public License 3");
+        }
+
+
     }
 }

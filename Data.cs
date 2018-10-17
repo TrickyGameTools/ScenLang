@@ -255,5 +255,7 @@ namespace ScenLang{
             GUI.Assert((!crash) || ret != "", $"Project config needed key {key}, but it's either empty or not defined at all.");
             return ret;
         }
+
     }
+
 }

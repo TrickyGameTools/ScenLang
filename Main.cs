@@ -36,6 +36,7 @@ namespace ScenLang
             TrickyUnits.GTK.QuickGTK.Hello();
             JCR6_zlib.Init();
             JCR6_lzma.Init();
+            Callback.IMKL();
             GUI.init(args);
             GUI.run();
         }
