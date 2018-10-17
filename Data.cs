@@ -267,6 +267,35 @@ namespace ScenLang{
             return ret;
         }
 
+        static public void PickBox(int page){
+            Callback.dontedit = true;
+            Callback.dontlink = true;
+            var t = (DataTextbox)Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).GetTextBox(0);
+            var atrim = true;
+            var alink = true;
+            atrim = t.Picture == t.Picture.Trim() && t.PictureSpecific==t.PictureSpecific.Trim();
+            foreach (string h in t.Head.Values) {
+                alink = alink && h == t.Picture;
+                atrim = atrim && h==h.Trim();
+            }
+            foreach(string c in t.Content.Values){
+                atrim = atrim && (c == c.Trim());
+            }
+            t.NameLinking = alink;
+            t.AllowTrim = atrim;
+            foreach (int idx in t.Head.Keys) GUI.EntryHead[idx].Text = t.Head[idx];
+            foreach (int idx in t.Content.Keys) GUI.EntryText[idx].Buffer.Text = t.Content[idx];
+            GUI.enPicDir.Text = t.Picture;
+            GUI.enPicSpecific.Text = t.PictureSpecific;
+            GUI.enAltFont.Text = t.AltFont;
+            GUI.tbAllowTrim.Active = t.AllowTrim;
+            GUI.tbNameLinking.Active = t.NameLinking;
+            GUI.AutoEnable();
+            Callback.dontedit = false;
+            Callback.dontlink = true;
+
+        }
+
     }
 
 }

@@ -43,14 +43,14 @@ namespace ScenLang
         static HBox headbox;
         static HBox editbox;
         static ListBox taglist;
-        static Entry enPicDir;
-        static Entry enPicSpecific;
-        static Entry enAltFont;
-        static CheckButton tbAllowTrim;
-        static CheckButton tbNameLinking;
+        public static Entry enPicDir;
+        public static Entry enPicSpecific;
+        public static Entry enAltFont;
+        public static CheckButton tbAllowTrim;
+        public static CheckButton tbNameLinking;
 
-        static Entry[] EntryHead;
-        static TextView[] EntryText;
+        public static Entry[] EntryHead;
+        public static TextView[] EntryText;
 
         static public bool NameLinking { get => tbNameLinking.Active; }
         static bool failquit;
@@ -156,10 +156,37 @@ namespace ScenLang
 
         static void CreateHeadbox(){
             var sw = new ScrolledWindow();
-            sw.SetSizeRequest(150, 400);
+            var selbox = new VBox();
+            sw.SetSizeRequest(150, 370);
             taglist = new ListBox("Tags");
+            taglist.Gadget.CursorChanged += Callback.PickTag;
             sw.Add(taglist.Gadget);
-            headbox.Add(sw);
+            selbox.Add(sw);
+            var m = new HBox();
+            var add = new Button("Add");
+            var ren = new Button("Rename");
+            var rem = new Button("Remove");
+            add.ModifyBg(StateType.Normal, RGB(18, 25, 0));
+            add.Child.ModifyFg(StateType.Normal, RGB(180, 255, 0));
+            ren.ModifyBg(StateType.Normal, RGB(25, 18, 0));
+            ren.Child.ModifyFg(StateType.Normal, RGB(255, 180, 0));
+            rem.ModifyBg(StateType.Normal, RGB(25, 0, 0));
+            rem.Child.ModifyFg(StateType.Normal, RGB(255, 0, 0));
+            add.ModifyBg(StateType.Prelight, RGB(180, 255, 0));
+            ren.ModifyBg(StateType.Prelight, RGB(255, 180, 0));
+            rem.ModifyBg(StateType.Prelight, RGB(255, 0, 0));
+            add.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
+            ren.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
+            rem.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
+            m.Add(add);
+            m.Add(ren);
+            m.Add(rem);
+            m.SetSizeRequest(230, 30);
+            requiretag.Add(ren);
+            requiretag.Add(rem);
+            requirefile.Add(add);
+            selbox.Add(m);
+            headbox.Add(selbox);
             var sdata = new VBox();
             // Picture dir
             var bxPicDir = new HBox();

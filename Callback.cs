@@ -42,8 +42,14 @@ namespace ScenLang
 
 
         public static void PickEntry(object sender, EventArgs arg){
+            dontedit = true;
             GUI.UpdateTagList();
             GUI.AutoEnable();
+            dontedit = false;
+        }
+
+        public static void PickTag(object sender, EventArgs arg){
+            Data.PickBox(0);
         }
 
         public static void IMKL()
