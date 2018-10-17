@@ -74,6 +74,8 @@ namespace ScenLang{
         static TJCRDIR[] JCR;
         static TJCRDIR PriJCR { get => JCR[0]; }
         static Dictionary<string, DataEntry> Entry = new Dictionary<string, DataEntry>();
+        static int _page = 0;
+        static public int Page { get => _page; }
         //static Dictionary<string, List<string>> TagList = new Dictionary<string, List<string>>();
 
         /// <summary>
@@ -270,6 +272,7 @@ namespace ScenLang{
         static public void PickBox(int page){
             Callback.dontedit = true;
             Callback.dontlink = true;
+            _page = page;
             var t = (DataTextbox)Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).GetTextBox(0);
             var atrim = true;
             var alink = true;
