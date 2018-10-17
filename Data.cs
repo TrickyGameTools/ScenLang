@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.15
+// Version: 18.10.17
 // EndLic
 ﻿using System;
 using TrickyUnits;
@@ -34,14 +34,15 @@ namespace ScenLang{
         // The int in the dictionaries is the language ID, not the page number!
         public Dictionary<int, string> Head = new Dictionary<int, string>();
         public Dictionary<int, string> Content = new Dictionary<int, string>();
+        public string Picture = "";
+        public string PictureSpecific = "";
+        public string AltFont = "";
+        public bool AllowTrim = true;
+        public bool NameLinking = true;
+
     }
 
     class DataTag{
-        public string Picture="";
-        public string PictureSpecific="";
-        public string AltFont="";
-        public bool AllowTrim = true;
-        public bool NameLinking = true;
         // And in this dictionary the 'int' is the page number... Seems odd, but is not as odd as it seems.
         public Dictionary<int, DataTextbox> TextBox = new Dictionary<int, DataTextbox>();
     }
@@ -49,6 +50,7 @@ namespace ScenLang{
     class DataEntry{
         public DataEntry() => Console.WriteLine($"Created new entry"); // debug
         public Dictionary<string, DataTag> Tags = new Dictionary<string, DataTag>();
+        public List<string> TagList = new List<string>();
     }
 
 
@@ -66,6 +68,7 @@ namespace ScenLang{
         static TJCRDIR[] JCR;
         static TJCRDIR PriJCR { get => JCR[0]; }
         static Dictionary<string, DataEntry> Entry = new Dictionary<string, DataEntry>();
+        //static Dictionary<string, List<string>> TagList = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// The only reason this was added the way it is, is because the guys at Microsoft are completely demented and will not allow me to do this the CLEAN and QUICK way as that will cause the C# compiler to throw errors for reasons that do not exist, but C# only makes them exist for intentions that are beyond any brain of INTELLIGENT human beings!
@@ -89,7 +92,7 @@ namespace ScenLang{
         static Data()
         {
             MKL.Lic    ("Scenario Language - Data.cs","GNU General Public License 3");
-            MKL.Version("Scenario Language - Data.cs","18.10.15");
+            MKL.Version("Scenario Language - Data.cs","18.10.17");
         }
 
         static public void LoadFromArgs(string[] args){
@@ -102,6 +105,108 @@ namespace ScenLang{
 
         }
 
+        static void Parse(int id,string EntryName){
+            Console.WriteLine($"{id}: Parsing: {EntryName}");
+            List<string> tm;
+            DataEntry en ;
+            DataTag tg;
+            DataTextbox tb=null;
+            var indexes = new Dictionary<string, int>();
+            if (id == 0)
+            {
+                en = new DataEntry();
+                tm = new List<string>();
+                Entry[EntryName] = en;
+                en.TagList = tm;
+            }
+            else
+            {
+                en = Entry[EntryName];
+                tm = en.TagList;
+            }
+            GUI.Assert(tm != null, $"Internal Error!\nNull for tagmap received when parsing {EntryName} for language #{id}.");
+            var ctag = "CRASH";
+            var J = JCR[id];
+            GUI.Assert(J.Exists(EntryName), $"Entry {EntryName} not found in language #{id}");
+            foreach(string tl in J.ReadLines(EntryName,true)){
+                var l = tl.Trim();
+                if (qstr.Prefixed(l,"[") && qstr.Suffixed(l,"]")){
+                    ctag = l.ToUpper();
+                    if (ctag=="[SCENARIO]"){
+                        foreach(string t in tm){
+                            if (!en.Tags.ContainsKey(t)) en.Tags[t] = new DataTag();
+                        }
+                    }
+                } else if (l!="" && !qstr.Prefixed(l,"--")){
+                    switch(ctag){
+                        case "CRASH":
+                            Console.WriteLine($"{qstr.Left(l,1)} ... {qstr.Right(l, 1)} => {l} len: {l.Length}");
+                            GUI.Assert(false, $"Tagless command in language #{id} entry {EntryName}\n\n{l}");
+                            break;
+                        case "[REM]":
+                            break;
+                        case "[TAGS]":
+                            if (id==0){
+                                if (tm.Contains(l.ToUpper()))
+                                    QuickGTK.Warn("Duplicate tag found!");
+                                else
+                                    tm.Add(l.ToUpper());
+                            } else {
+                                if (!tm.Contains(l.ToUpper())) {
+                                    QuickGTK.Warn("Language #{id} contains the non-existent tag {l}.\n\nI will continue, but do expect crashes!");
+                                }
+                            }
+                            break;
+                        case "[SCENARIO]":
+                            var c = l[0];
+                            var s = qstr.Right(l, l.Length - 1);
+                            var tt = "";
+                            switch(c){
+                                case '@':
+                                    GUI.Assert(tm.Contains(s.ToUpper()), $"Reference to non-existent tag {s}");
+                                    tt = s.ToUpper();
+                                    tg = en.Tags[s.ToUpper()];
+                                    if (!indexes.ContainsKey(tt)) { indexes[tt] = -1; }
+                                    indexes[tt]++;
+                                    if (id == 0)
+                                    {
+                                        tb = new DataTextbox();
+                                        tg.TextBox[indexes[tt]] = tb;
+                                    }
+                                    else {
+                                        tb = tg.TextBox[indexes[tt]];
+                                    }
+                                    tb.Content[id] = "";
+                                    break;
+                                case '!':
+                                    tb.Head[id] = s;
+                                    break;
+                                case '*':
+                                    GUI.Assert(id == 0 || tb.Picture == s, $"Picture mismatch!\n{id}:{tt}\n{tb.Picture}!={s}");
+                                    tb.Picture = s;
+                                    Console.WriteLine($"Defined Picture\n{id}:{tt}\n{tb.Picture}");
+                                    break;
+                                case ':':
+                                    GUI.Assert(id == 0 || tb.PictureSpecific == s, "Picture specific mismatch");
+                                    tb.PictureSpecific = s;
+                                    break;
+                                case '#':
+                                    if (tb.Content[id] != "") tb.Content[id] += "\n";
+                                    tb.Content[id] += s;
+                                    break;
+                                default:
+                                    GUI.Fail($"Unknown scenario tag {c}");
+                                    break;
+                            }
+                            break;
+                        default:
+                            GUI.Assert(false, $"I do not know how to handle tag {ctag}");
+                            break;
+                    }
+                }
+            }
+        }
+
         static void JCR_Reload(bool updategui=true){
             for (int i = 0; i < NumLanguages;i++){
                 JCR[i] = JCR6.Dir(Config($"Lang{i+1}.File",true));
@@ -110,6 +215,9 @@ namespace ScenLang{
             if (updategui) GUI.ListEntries(Entries);
             foreach(string ekey in Entries){
                 Entry[ekey] = new DataEntry();
+                for (int i = 0; i < NumLanguages;i++){
+                    Parse(i, ekey);
+                }
             }
         }
 

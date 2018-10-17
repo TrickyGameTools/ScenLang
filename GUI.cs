@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.15
+// Version: 18.10.17
 // EndLic
 ﻿using System;
 using System.Reflection;
@@ -241,13 +241,16 @@ namespace ScenLang
         }
 
         public static void Fail(string message){
+            Console.WriteLine("FAILURE! " + message);
             QuickGTK.Error($"FAILURE!\n\n{message}");
             success = false;
             if (failquit) Application.Quit();
+            throw new Exception(message);
         }
 
         public static bool Assert(bool condition,string error){
-            if (!condition) Fail(error);
+            if (!condition)            
+                Fail(error);            
             return condition;
         }
 
@@ -307,13 +310,42 @@ namespace ScenLang
                 box.Add(tbox);
                 editbox.Add(box);
 
+                requiretag.Add(hwid);
+                requiretag.Add(twid);
+
             }
+        }
+
+        public static string ChosenEntry { get =>  entrylist.ItemText; }
+        public static bool EntryChosen { get => ChosenEntry != ""; }
+        public static string ChosenTag { get {
+                if (!EntryChosen) return "";
+                return taglist.ItemText;
+            }
+        }
+        public static bool TagChosen { get => ChosenTag != ""; }
+
+        public static void AutoEnable(){
+            List<Widget> l;
+            bool b;
+            for (byte i = 0; i < 2;i++){
+                switch(i){
+                    case 0: l = requirefile; b = EntryChosen; break;
+                    case 1: l = requiretag; b = TagChosen; break;
+                    default: Fail("INTERNAL ERROR IN AUTO-ENABLE!"); return; // This should be impossible, but I've added this to avoid the "undefined variable" compiler error as the C# compiler is not smart enough to understand the required variables are impossible to be undefined.
+                }
+                foreach (Widget w in l) w.Sensitive = b;
+            }
+        }
+
+        public static void UpdateTagList(){
+
         }
 
 
         public static void init(string[] args)
         {
-            MKL.Version("Scenario Language - GUI.cs","18.10.15");
+            MKL.Version("Scenario Language - GUI.cs","18.10.17");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
@@ -330,6 +362,8 @@ namespace ScenLang
             // Base values
             ListEntries(Data.Entries);
 
+            // Disable all shit that shouldn't work yet
+            AutoEnable();
         }
 
 

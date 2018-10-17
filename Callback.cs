@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.15
+// Version: 18.10.17
 // EndLic
 ﻿using System;
 namespace ScenLang
@@ -37,5 +37,11 @@ namespace ScenLang
 
         public static void EditLHead(object sender,EventArgs arg){ }
         public static void EditLText(object sender,EventArgs arg){ }
+
+
+        public static void PickEntry(object sender, EventArgs arg){
+            GUI.UpdateTagList();
+            GUI.AutoEnable();
+        }
     }
 }
