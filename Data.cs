@@ -96,6 +96,7 @@ namespace ScenLang{
                 return ret;
             }
         }
+        static public object ChosenTextBox() => GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).GetTextBox(Page);
 
         static public DataEntry GetEntry(string key) => Entry[key];
 
@@ -295,7 +296,7 @@ namespace ScenLang{
             GUI.tbNameLinking.Active = t.NameLinking;
             GUI.AutoEnable();
             Callback.dontedit = false;
-            Callback.dontlink = true;
+            Callback.dontlink = false;
 
         }
 

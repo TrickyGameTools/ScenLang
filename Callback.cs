@@ -23,6 +23,7 @@
 // Version: 18.10.17
 // EndLic
 ﻿using System;
+using Gtk;
 using TrickyUnits;
 using TrickyUnits.GTK;
 namespace ScenLang
@@ -31,7 +32,18 @@ namespace ScenLang
     {
         public static bool dontedit;
         public static bool dontlink;
-        public static void EditPicDir(object sender,EventArgs arg){}
+        public static void EditPicDir(object sender,EventArgs arg){
+            //QuickGTK.Info($"Hoi! {dontedit} / {dontlink}");
+            if (dontedit) return;
+            var p = (Entry)sender;
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.Picture = p.Text;
+            if (dontlink || (!dp.NameLinking)) return;
+            dontlink = true;
+            foreach (Entry e in GUI.EntryHead) e.Text = p.Text;
+            dontlink = false;
+        }
+
         public static void EditPicSpecific(object sender, EventArgs arg) { }
         public static void EditAltFont(object sender, EventArgs arg) { }
         public static void EditAllowTrim(object sender, EventArgs arg){ }
