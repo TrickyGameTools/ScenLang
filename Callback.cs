@@ -88,7 +88,15 @@ namespace ScenLang
             }
             dontlink = false;
         }
-        public static void EditLText(object sender,EventArgs arg){ }
+        public static void EditLText(object sender,EventArgs arg){
+            if (dontedit) return;
+            var b = (TextBuffer)sender;
+            var w = GUI.WidgetFromBuffer(b);
+            //var p = (TextView)sender;
+            var i = GUI.GetIndex(w);
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.Content[i] = b.Text;
+        }
 
 
         public static void PickEntry(object sender, EventArgs arg){

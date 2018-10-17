@@ -68,6 +68,15 @@ namespace ScenLang
             return WidgetIndexes[w];
         }
 
+        static public Widget WidgetFromBuffer(TextBuffer t){
+            Widget ret = null;
+            foreach(Widget w in WidgetIndexes.Keys){
+                if (w.GetType() == typeof(TextView) && ((TextView)w).Buffer == t) ret = w;
+            }
+            Assert(ret != null, "Tried to find and index of an unindex widget");
+            return ret;
+        }
+
         static void CreateWindow(){
             win = new MainWindow();
             win.Title = $"ScenLang {MKL.Newest}";
@@ -342,6 +351,7 @@ namespace ScenLang
                 tlab.SetSizeRequest(60, 340);
                 hwid.SetSizeRequest(140, 28);
                 tscr.SetSizeRequest(140, 340);
+                twid.WrapMode = WrapMode.Word;
 
                 // Indexer
                 WidgetIndexes[hwid] = i;
