@@ -102,7 +102,29 @@ namespace ScenLang
 
         static void CreateEntryList(){
             entrylist = new ListBox("Entries");
-            entrylist.SetSizeRequest(230,submainbox.HeightRequest-314);
+            entrylist.SetSizeRequest(230,submainbox.HeightRequest-289);
+            entrylist.Gadget.CursorChanged += Callback.PickEntry;
+            var m = new HBox();
+            var add = new Button("Add");
+            var ren = new Button("Rename");
+            var rem = new Button("Remove");
+            add.ModifyBg(StateType.Normal, RGB(18, 25, 0));
+            add.Child.ModifyFg(StateType.Normal, RGB(180, 255, 0));
+            ren.ModifyBg(StateType.Normal, RGB(25, 18, 0));
+            ren.Child.ModifyFg(StateType.Normal, RGB(255, 180, 0));
+            rem.ModifyBg(StateType.Normal, RGB(25, 0, 0));
+            rem.Child.ModifyFg(StateType.Normal, RGB(255,0, 0));
+            add.ModifyBg(StateType.Prelight, RGB(180, 255, 0));
+            ren.ModifyBg(StateType.Prelight, RGB(255, 180, 0));
+            rem.ModifyBg(StateType.Prelight, RGB(255, 0, 0));
+            ren.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
+            rem.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
+            m.Add(add);
+            m.Add(ren);
+            m.Add(rem);
+            m.SetSizeRequest(230, 25);
+            requirefile.Add(ren);
+            requirefile.Add(rem);
             Assembly asm = Assembly.GetExecutingAssembly();
             System.IO.Stream stream;
             //= asm.GetManifestResourceStream("MyData.Properties.Icon.png");
@@ -118,6 +140,7 @@ namespace ScenLang
             sw.Add(entrylist.Gadget);
             var lb = new VBox();
             lb.Add(sw);
+            lb.Add(m);
             lb.Add(mascot);
             submainbox.Add(lb);
         }
@@ -339,7 +362,12 @@ namespace ScenLang
         }
 
         public static void UpdateTagList(){
-
+            taglist.Clear();
+            var tl = Data.GetEntry(ChosenEntry).TagList;
+            tl.Sort();
+            foreach (string k in tl){
+                taglist.AddItem(k);
+            }
         }
 
 

@@ -42,15 +42,21 @@ namespace ScenLang{
 
     }
 
-    class DataTag{
+    public class DataTag{
         // And in this dictionary the 'int' is the page number... Seems odd, but is not as odd as it seems.
-        public Dictionary<int, DataTextbox> TextBox = new Dictionary<int, DataTextbox>();
+        Dictionary<int, DataTextbox> TextBox = new Dictionary<int, DataTextbox>();
+        public void NewTextBox(int i) { TextBox[i] = new DataTextbox(); }
+        public object GetTextBox(int i) => TextBox[i];
+
     }
 
-    class DataEntry{
+    public class DataEntry{
         public DataEntry() => Console.WriteLine($"Created new entry"); // debug
-        public Dictionary<string, DataTag> Tags = new Dictionary<string, DataTag>();
+        SortedDictionary<string, DataTag> Tags = new SortedDictionary<string, DataTag>();
         public List<string> TagList = new List<string>();
+        public bool ContainsTag(string tag) => Tags.ContainsKey(tag.ToUpper());
+        public void AddTag(string tag,DataTag data) { Tags[tag.ToUpper()] = data; }
+        public DataTag GetTag(string tag) => Tags[tag];
     }
 
 
@@ -88,6 +94,8 @@ namespace ScenLang{
                 return ret;
             }
         }
+
+        static public DataEntry GetEntry(string key) => Entry[key];
 
         static Data()
         {
@@ -134,7 +142,7 @@ namespace ScenLang{
                     ctag = l.ToUpper();
                     if (ctag=="[SCENARIO]"){
                         foreach(string t in tm){
-                            if (!en.Tags.ContainsKey(t)) en.Tags[t] = new DataTag();
+                            if (!en.ContainsTag(t)) en.AddTag(t, new DataTag());
                         }
                     }
                 } else if (l!="" && !qstr.Prefixed(l,"--")){
@@ -165,17 +173,20 @@ namespace ScenLang{
                                 case '@':
                                     GUI.Assert(tm.Contains(s.ToUpper()), $"Reference to non-existent tag {s}");
                                     tt = s.ToUpper();
-                                    tg = en.Tags[s.ToUpper()];
+                                    tg = en.GetTag(s);
                                     if (!indexes.ContainsKey(tt)) { indexes[tt] = -1; }
                                     indexes[tt]++;
                                     if (id == 0)
                                     {
-                                        tb = new DataTextbox();
-                                        tg.TextBox[indexes[tt]] = tb;
-                                    }
-                                    else {
-                                        tb = tg.TextBox[indexes[tt]];
-                                    }
+                                        //tb = new DataTextbox();
+                                        //tg.TextBox[indexes[tt]] = tb;
+                                        tg.NewTextBox(indexes[tt]);
+
+                                        }
+                                        //else {
+                                        //tb = tg.TextBox[indexes[tt]];
+                                        tb = (DataTextbox)tg.GetTextBox(indexes[tt]);
+//                                    }
                                     tb.Content[id] = "";
                                     break;
                                 case '!':
