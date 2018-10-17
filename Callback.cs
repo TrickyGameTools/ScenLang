@@ -38,16 +38,39 @@ namespace ScenLang
             var p = (Entry)sender;
             var dp = (DataTextbox)Data.ChosenTextBox();
             dp.Picture = p.Text;
+            if dp.AllowTrim dp.Picture = dp.Picture.Trim();
             if (dontlink || (!dp.NameLinking)) return;
             dontlink = true;
             foreach (Entry e in GUI.EntryHead) e.Text = p.Text;
             dontlink = false;
         }
 
-        public static void EditPicSpecific(object sender, EventArgs arg) { }
-        public static void EditAltFont(object sender, EventArgs arg) { }
-        public static void EditAllowTrim(object sender, EventArgs arg){ }
-        public static void EditNameLinking(object sender, EventArgs arg) { }
+        public static void EditPicSpecific(object sender, EventArgs arg) {
+            if (dontedit) return;
+            var p = (Entry)sender;
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.PictureSpecific = p.Text;
+            if (dp.AllowTrim) dp.PictureSpecific = dp.PictureSpecific.Trim();
+        }
+        public static void EditAltFont(object sender, EventArgs arg) {
+            if (dontedit) return;
+            var p = (Entry)sender;
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.AltFont = p.Text;
+            if (dp.AllowTrim) dp.AltFont = dp.AltFont.Trim();
+        }
+        public static void EditAllowTrim(object sender, EventArgs arg){
+            if (dontedit) return;
+            var p = (CheckButton)sender;
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.AllowTrim = p.Active;
+        }
+        public static void EditNameLinking(object sender, EventArgs arg) {
+            if (dontedit) return;
+            var p = (CheckButton)sender;
+            var dp = (DataTextbox)Data.ChosenTextBox();
+            dp.NameLinking = p.Active;
+        }
 
         public static void EditLHead(object sender,EventArgs arg){ }
         public static void EditLText(object sender,EventArgs arg){ }
