@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.17
+// Version: 18.10.18
 // EndLic
 ﻿using System;
 using System.Reflection;
@@ -117,6 +117,9 @@ namespace ScenLang
             var add = new Button("Add");
             var ren = new Button("Rename");
             var rem = new Button("Remove");
+            add.Clicked += Callback.AddEntry;
+            ren.Clicked += Callback.RenEntry;
+            rem.Clicked += Callback.RemEntry;
             add.ModifyBg(StateType.Normal, RGB(18, 25, 0));
             add.Child.ModifyFg(StateType.Normal, RGB(180, 255, 0));
             ren.ModifyBg(StateType.Normal, RGB(25, 18, 0));
@@ -175,6 +178,9 @@ namespace ScenLang
             var add = new Button("Add");
             var ren = new Button("Rename");
             var rem = new Button("Remove");
+            add.Clicked += Callback.AddTag;
+            ren.Clicked += Callback.RenTag;
+            rem.Clicked += Callback.RemTag;
             add.ModifyBg(StateType.Normal, RGB(18, 25, 0));
             add.Child.ModifyFg(StateType.Normal, RGB(180, 255, 0));
             ren.ModifyBg(StateType.Normal, RGB(25, 18, 0));
@@ -413,7 +419,7 @@ namespace ScenLang
 
         public static void init(string[] args)
         {
-            MKL.Version("Scenario Language - GUI.cs","18.10.17");
+            MKL.Version("Scenario Language - GUI.cs","18.10.18");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
