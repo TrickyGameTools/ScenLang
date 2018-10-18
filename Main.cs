@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.17
+// Version: 18.10.18
 // EndLic
 ﻿using System;
 using TrickyUnits;
@@ -31,7 +31,7 @@ namespace ScenLang
     {
         public static void Main(string[] args)
         {
-            MKL.Version("Scenario Language - Main.cs","18.10.17");
+            MKL.Version("Scenario Language - Main.cs","18.10.18");
             MKL.Lic    ("Scenario Language - Main.cs","GNU General Public License 3");
             TrickyUnits.GTK.QuickGTK.Hello();
             TrickyUnits.GTK.QuickInputBox.Hello();

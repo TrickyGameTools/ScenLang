@@ -110,7 +110,12 @@ namespace ScenLang
             Data.PickBox(0);
         }
 
-        public static void AddEntry(object sender,EventArgs arg){}
+        public static void AddEntry(object sender,EventArgs arg){
+            QuickInputBox.Create("Please enter a name for the new entry", delegate (string s, bool ok)
+            {
+                if (ok) { Data.NewEntry(s); }
+            },"",null,"[A-Za-z0-9_/]*");
+        }
         public static void RenEntry(object sender,EventArgs arg){}
         public static void RemEntry(object sender,EventArgs arg){}
 

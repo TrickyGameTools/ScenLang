@@ -68,6 +68,8 @@ namespace ScenLang
             return WidgetIndexes[w];
         }
 
+
+        static public void ADDENTRY(string e) => entrylist.AddItem(e);
         static public Widget WidgetFromBuffer(TextBuffer t){
             Widget ret = null;
             foreach(Widget w in WidgetIndexes.Keys){

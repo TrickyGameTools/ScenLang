@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.17
+// Version: 18.10.18
 // EndLic
 ﻿using System;
 using TrickyUnits;
@@ -103,7 +103,7 @@ namespace ScenLang{
         static Data()
         {
             MKL.Lic    ("Scenario Language - Data.cs","GNU General Public License 3");
-            MKL.Version("Scenario Language - Data.cs","18.10.17");
+            MKL.Version("Scenario Language - Data.cs","18.10.18");
         }
 
         static public void LoadFromArgs(string[] args){
@@ -298,6 +298,13 @@ namespace ScenLang{
             Callback.dontedit = false;
             Callback.dontlink = false;
 
+        }
+
+        static public void NewEntry(string pEntry){
+            var e = pEntry.ToUpper();
+            if (Entry.ContainsKey(e) && (!QuickGTK.Confirm($"An entry named \"{e}\" already exists!\nDo you want to create a new entry with that name destroying the old one?"))) return;
+            Entry[e] = new DataEntry();
+            GUI.ADDENTRY(e);
         }
 
     }
