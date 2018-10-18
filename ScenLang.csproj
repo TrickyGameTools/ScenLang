@@ -192,6 +192,9 @@
     <Compile Include="..\JCR6\Drivers\FileTypes\RealDir.cs">
       <Link>Dependencies\JCR6\Drivers\FileTypes\RealDir.cs</Link>
     </Compile>
+    <Compile Include="..\TrickyUnits\gtk\inputdialog.cs">
+      <Link>Dependencies\TrickyUnits\gtk\inputdialog.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />

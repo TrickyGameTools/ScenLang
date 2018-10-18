@@ -34,6 +34,7 @@ namespace ScenLang
             MKL.Version("Scenario Language - Main.cs","18.10.17");
             MKL.Lic    ("Scenario Language - Main.cs","GNU General Public License 3");
             TrickyUnits.GTK.QuickGTK.Hello();
+            TrickyUnits.GTK.QuickInputBox.Hello();
             JCR6_zlib.Init();
             JCR6_lzma.Init();
             Callback.IMKL();
