@@ -314,7 +314,8 @@ namespace ScenLang{
             var oe = Entry[oldEntry.ToUpper()];
             Entry.Remove(oldEntry.ToUpper());
             Entry[e] = oe;
-            GUI.UPDATEENTRIES(e);
+            _entries = null;
+            GUI.UPDATEENTRIES();
         }
 
 

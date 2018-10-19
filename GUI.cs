@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.18
+// Version: 18.10.19
 // EndLic
 ﻿using System;
 using System.Reflection;
@@ -77,6 +77,11 @@ namespace ScenLang
             }
             Assert(ret != null, "Tried to find and index of an unindex widget");
             return ret;
+        }
+
+        static public void UPDATEENTRIES(){
+            entrylist.Clear();
+            foreach (string k in Data.Entries) entrylist.AddItem(k);
         }
 
         static void CreateWindow(){
@@ -421,7 +426,7 @@ namespace ScenLang
 
         public static void init(string[] args)
         {
-            MKL.Version("Scenario Language - GUI.cs","18.10.18");
+            MKL.Version("Scenario Language - GUI.cs","18.10.19");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
