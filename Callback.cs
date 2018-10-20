@@ -33,8 +33,8 @@ namespace ScenLang
 
         public static void IMKL()
         {
-            MKL.Version("Scenario Language - Callback.cs", "18.10.20");
-            MKL.Lic("Scenario Language - Callback.cs", "GNU General Public License 3");
+            MKL.Version("Scenario Language - Callback.cs","18.10.20");
+            MKL.Lic    ("Scenario Language - Callback.cs","GNU General Public License 3");
         }
 
         static string renameoriginal = "";
