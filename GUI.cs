@@ -238,6 +238,12 @@ namespace ScenLang
                 b.ModifyBg(StateType.Insensitive, RGB(18, 0, 25));
                 b.Child.ModifyFg(StateType.Insensitive, RGB(18, 0, 25));
             }
+            pagebox.Add(newpage);
+            pagebox.Add(rempage);
+            pagebox.Add(prvpage);
+            pagebox.Add(labpage);
+            pagebox.Add(nxtpage);
+            sdata.Add(pagebox);
             // Picture dir
             var bxPicDir = new HBox();
             var lbPicDir = new Label("Picture Dir:");
