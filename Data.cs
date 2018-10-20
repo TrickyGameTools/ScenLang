@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.19
+// Version: 18.10.20
 // EndLic
 ﻿using System;
 using TrickyUnits;
@@ -83,14 +83,30 @@ namespace ScenLang{
         /// </summary>
         /// <value>The entries.</value>
         static public string[] Entries { get {
+                string[] ret;
                 if (_entries!=null) return _entries;
-                var J = JCR[0];
-                var n = J.CountEntries;
-                var ret = new string[n];
-                var i = -1;
-                foreach(string k in J.Entries.Keys) {
-                    i++;
-                    ret[i] = k;
+                Console.WriteLine("No entry list yet, so generating one!");
+                if (Entry == null || Entry.Count==0){
+                    Console.WriteLine("Setting this up from JCR by lack of data in memory");
+                    var J = JCR[0];
+                    var n = J.CountEntries;
+                    ret = new string[n];
+                    var i = -1;
+                    foreach (string k in J.Entries.Keys)
+                    {
+                        i++;
+                        ret[i] = k;
+                    }
+                } else {
+                    Console.WriteLine("Setting this up from memory");
+                    var n = Entry.Count;
+                    ret = new string[n];
+                    var i = -1;
+                        foreach (string k in Entry.Keys)
+                    {
+                        i++;
+                        ret[i] = k;
+                    }
                 }
                 _entries = ret;
                 return ret;
@@ -103,7 +119,7 @@ namespace ScenLang{
         static Data()
         {
             MKL.Lic    ("Scenario Language - Data.cs","GNU General Public License 3");
-            MKL.Version("Scenario Language - Data.cs","18.10.19");
+            MKL.Version("Scenario Language - Data.cs","18.10.20");
         }
 
         static public void LoadFromArgs(string[] args){
@@ -314,6 +330,17 @@ namespace ScenLang{
             var oe = Entry[oldEntry.ToUpper()];
             Entry.Remove(oldEntry.ToUpper());
             Entry[e] = oe;
+            _entries = null;
+            GUI.UPDATEENTRIES();
+        }
+
+        static public void RemoveEntry(string pentry){
+            if (Entry.Count<2) {
+                QuickGTK.Error("You cannot delete the last entry. 1 entry must at least always remain");
+                return;
+            }
+            if (!QuickGTK.Confirm($"Do you really want to remove entry {pentry}?")) return;
+            Entry.Remove(pentry);
             _entries = null;
             GUI.UPDATEENTRIES();
         }

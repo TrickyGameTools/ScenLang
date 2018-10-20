@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.19
+// Version: 18.10.20
 // EndLic
 ﻿using System;
 using System.Reflection;
@@ -33,7 +33,7 @@ namespace ScenLang
 {
     static class GUI
     {
-        static MainWindow win;
+        static public MainWindow win;
         static bool success;
         static VBox mainbox;
         static HBox submainbox;
@@ -81,7 +81,10 @@ namespace ScenLang
 
         static public void UPDATEENTRIES(){
             entrylist.Clear();
-            foreach (string k in Data.Entries) entrylist.AddItem(k);
+            foreach (string k in Data.Entries) {
+                entrylist.AddItem(k);
+                Console.WriteLine($"UE: {k}");
+            }
         }
 
         static void CreateWindow(){
@@ -426,7 +429,7 @@ namespace ScenLang
 
         public static void init(string[] args)
         {
-            MKL.Version("Scenario Language - GUI.cs","18.10.19");
+            MKL.Version("Scenario Language - GUI.cs","18.10.20");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }

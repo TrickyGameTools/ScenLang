@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.18
+// Version: 18.10.20
 // EndLic
 ﻿using System;
 using Gtk;
@@ -30,6 +30,7 @@ namespace ScenLang
 {
     static class Callback
     {
+        static string renameoriginal = "";
         public static bool dontedit;
         public static bool dontlink;
         public static void EditPicDir(object sender,EventArgs arg){
@@ -116,8 +117,15 @@ namespace ScenLang
                 if (ok) { Data.NewEntry(s); }
             },"",null,"[A-Za-z0-9_/]*");
         }
-        public static void RenEntry(object sender,EventArgs arg){}
-        public static void RemEntry(object sender,EventArgs arg){}
+        public static void RenEntry(object sender,EventArgs arg){
+            renameoriginal = GUI.ChosenEntry;
+            QuickInputBox.Create($"Please enter a new name for entry {renameoriginal}",delegate (string s, bool ok){
+                if (!ok) return;
+                var us = s.ToUpper();
+                Data.RenameEntry(renameoriginal, us);
+            },renameoriginal,GUI.win, "[A-Za-z0-9_/]*");
+        }
+        public static void RemEntry(object sender, EventArgs arg) => Data.RemoveEntry(GUI.ChosenEntry);
 
         public static void AddTag(object sender,EventArgs arg){}
         public static void RenTag(object sender,EventArgs arg){}
@@ -125,7 +133,7 @@ namespace ScenLang
 
         public static void IMKL()
         {
-            MKL.Version("Scenario Language - Callback.cs","18.10.18");
+            MKL.Version("Scenario Language - Callback.cs","18.10.20");
             MKL.Lic    ("Scenario Language - Callback.cs","GNU General Public License 3");
         }
 
