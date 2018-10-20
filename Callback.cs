@@ -30,6 +30,13 @@ namespace ScenLang
 {
     static class Callback
     {
+
+        public static void IMKL()
+        {
+            MKL.Version("Scenario Language - Callback.cs", "18.10.20");
+            MKL.Lic("Scenario Language - Callback.cs", "GNU General Public License 3");
+        }
+
         static string renameoriginal = "";
         public static bool dontedit;
         public static bool dontlink;
@@ -148,12 +155,11 @@ namespace ScenLang
             GUI.UpdateTagList();
         }
 
-        public static void IMKL()
-        {
-            MKL.Version("Scenario Language - Callback.cs","18.10.20");
-            MKL.Lic    ("Scenario Language - Callback.cs","GNU General Public License 3");
-        }
 
+        public static void InsertPage(object sender,EventArgs a){
+            if (!QuickGTK.Confirm("Do you really want to insert a page here?")) return;
+            Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).InsertTextBox(Data.Page);
+        }
 
     }
 }

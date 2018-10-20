@@ -67,7 +67,14 @@ namespace ScenLang
             }
 
         }
-
+        public void InsertTextBox(int page=-1) // Negative page = at the end of the line;
+        {
+            var ipoint = page; if (ipoint < 0) ipoint = CountTextBoxes+1;
+            for (int i = CountTextBoxes+1; i >ipoint ;i++){
+                TextBox[i] = TextBox[i - 1];
+            }
+            TextBox[ipoint] = new DataTextbox();
+        }
     }
 
     public class DataEntry
