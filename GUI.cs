@@ -213,6 +213,31 @@ namespace ScenLang
             selbox.Add(m);
             headbox.Add(selbox);
             var sdata = new VBox();
+            // Pagination
+            var pagebox = new HBox();
+            var newpage = new Button("Insert"); requiretag.Add(newpage);
+            var rempage = new Button("Destroy"); requiretag.Add(rempage);
+            var prvpage = new Button("<"); requiretag.Add(prvpage);
+            var labpage = new Label("--/--");
+            var nxtpage = new Button(">"); requiretag.Add(nxtpage);
+            newpage.ModifyBg(StateType.Normal, RGB(18, 25, 0));
+            rempage.ModifyBg(StateType.Normal, RGB(25, 0, 0));
+            prvpage.ModifyBg(StateType.Normal, RGB(25, 18, 0));
+            nxtpage.ModifyBg(StateType.Normal, RGB(25, 18, 0));
+            newpage.ModifyBg(StateType.Prelight, RGB(180, 255, 0));
+            rempage.ModifyBg(StateType.Prelight, RGB(250, 0, 0));
+            prvpage.ModifyBg(StateType.Prelight, RGB(0, 180, 255));
+            nxtpage.ModifyBg(StateType.Prelight, RGB(0, 180, 255));
+            labpage.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            newpage.Child.ModifyFg(StateType.Normal, RGB(180, 255, 0));
+            rempage.Child.ModifyFg(StateType.Normal, RGB(255, 0, 0));
+            prvpage.Child.ModifyFg(StateType.Normal, RGB(255, 180, 0));
+            nxtpage.Child.ModifyFg(StateType.Normal, RGB(255, 180, 0));
+            var pglst = new Button[] { newpage, rempage, prvpage, nxtpage};
+            foreach(Button b in pglst){
+                b.ModifyBg(StateType.Insensitive, RGB(18, 0, 25));
+                b.Child.ModifyFg(StateType.Insensitive, RGB(18, 0, 25));
+            }
             // Picture dir
             var bxPicDir = new HBox();
             var lbPicDir = new Label("Picture Dir:");
