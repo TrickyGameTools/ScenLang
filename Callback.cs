@@ -161,5 +161,12 @@ namespace ScenLang
             Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).InsertTextBox(Data.Page);
         }
 
+        public static void NextPage(object sender,EventArgs a){
+            if (Data.Page < Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).CountTextBoxes) Data.PickBox(Data.Page + 1);
+            else if (QuickGTK.Confirm("No more pages.\nDo you want to add one?")) {
+                Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).InsertTextBox();
+                Data.PickBox(Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).CountTextBoxes);
+            }
+        }
     }
 }

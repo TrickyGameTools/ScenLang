@@ -79,6 +79,7 @@ namespace ScenLang
             Console.Write(" action ... ");
             TextBox[ipoint] = new DataTextbox();
             Console.WriteLine("Ok!");
+            GUI.WriteLn("Textbox inserted!");
         }
     }
 
