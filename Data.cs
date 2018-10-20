@@ -69,11 +69,16 @@ namespace ScenLang
         }
         public void InsertTextBox(int page=-1) // Negative page = at the end of the line;
         {
-            var ipoint = page; if (ipoint < 0) ipoint = CountTextBoxes+1;
-            for (int i = CountTextBoxes+1; i >ipoint ;i++){
+            var num = CountTextBoxes + 1;
+            var ipoint = page; if (ipoint < 0) ipoint = num;
+            Console.Write($"Inserting at postion #{ipoint}/{num} ");
+            for (int i = num; i >ipoint ;i--){
+                Console.Write(".");
                 TextBox[i] = TextBox[i - 1];
             }
+            Console.Write(" action ... ");
             TextBox[ipoint] = new DataTextbox();
+            Console.WriteLine("Ok!");
         }
     }
 

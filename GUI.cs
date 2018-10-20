@@ -239,7 +239,7 @@ namespace ScenLang
                 b.ModifyBg(StateType.Insensitive, RGB(18, 0, 25));
                 b.Child.ModifyFg(StateType.Insensitive, RGB(18, 0, 25));
             }
-            newpage += Callback.InsertPage;
+            newpage.Clicked += Callback.InsertPage;
             pagebox.Add(newpage);
             pagebox.Add(rempage);
             pagebox.Add(prvpage);
