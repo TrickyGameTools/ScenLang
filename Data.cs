@@ -50,21 +50,41 @@ namespace ScenLang{
 
     }
 
-    public class DataEntry{
+    public class DataEntry
+    {
         public DataEntry() => Console.WriteLine($"Created new entry"); // debug
         SortedDictionary<string, DataTag> Tags = new SortedDictionary<string, DataTag>();
         public List<string> TagList = new List<string>();
         public bool ContainsTag(string tag) => Tags.ContainsKey(tag.ToUpper());
-        public void AddTag(string tag,DataTag data) { Tags[tag.ToUpper()] = data; }
+        public void AddTag(string tag, DataTag data) { Tags[tag.ToUpper()] = data; }
         public DataTag GetTag(string tag) => Tags[tag];
+        public void ReDoTagList()
+        {
+            var tl = TagList;
+            tl.Clear();
+            foreach (string tag in Tags.Keys) tl.Add(tag);
+        }
+        public void RemoveTag(string tag) { Tags.Remove(tag.ToUpper()); GUI.UpdateTagList(); }
+        public void RenameTag(string vieux, string nouveau) {
+            var tag = nouveau.ToUpper();
+            if (vieux.ToUpper() == nouveau.ToUpper()) { QuickGTK.Error("You cannot rename into itself"); return; }
+            if (ContainsTag(tag) && (!QuickGTK.Confirm($"Within entry \"{GUI.ChosenEntry}\" a tag named \"{tag}\" already exists!\nDo you want to perform renaming anyway tag with that name destroying the old one?"))) return;
+            var td = GetTag(vieux.ToUpper());
+            AddTag(tag, td);
+            RemoveTag(vieux);
+            var t = GetTag(tag);
+            //t.NewTextBox(0);
+            ReDoTagList();
+            GUI.UpdateTagList();
+        }
+
     }
 
 
     /// <summary>
     /// This class contains all the data and functions to manipulate them.
     /// </summary>
-    static public class Data
-    {
+    static public class Data {
         static TGINI MainConfig;
         static string _project;
         static public bool Loaded => MainConfig != null;
@@ -356,6 +376,10 @@ namespace ScenLang{
         }
 
 
-    }
+
+
+
+
+        }
 
 }

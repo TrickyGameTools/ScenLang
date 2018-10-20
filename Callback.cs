@@ -133,7 +133,14 @@ namespace ScenLang
                 Data.NewTag(s);
             },"",null,"[A-Za-z0-9_]*");
         }
-        public static void RenTag(object sender,EventArgs arg){}
+        public static void RenTag(object sender,EventArgs arg){
+            renameoriginal = GUI.ChosenTag;
+            QuickInputBox.Create($"Please enter a new name for tag {renameoriginal}",delegate (string s, bool ok){
+                if (!ok) return;
+                var e = Data.GetEntry(GUI.ChosenEntry);
+                e.RenameTag(renameoriginal, s);
+            }, "", GUI.win, "[A-Za-z0-9_]*");
+        }
         public static void RemTag(object sender,EventArgs arg){}
 
         public static void IMKL()
