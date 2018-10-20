@@ -344,7 +344,7 @@ namespace ScenLang
             Callback.dontlink = true;
             _page = page;
             GUI.PaginationLabel.Text = $"{_page+1}/{GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).CountTextBoxes+1}";
-            var t = (DataTextbox)Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).GetTextBox(0);
+            var t = (DataTextbox)Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).GetTextBox(_page);
             var atrim = true;
             var alink = true;
             atrim = t.Picture == t.Picture.Trim() && t.PictureSpecific==t.PictureSpecific.Trim();
