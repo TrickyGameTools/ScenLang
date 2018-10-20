@@ -127,7 +127,12 @@ namespace ScenLang
         }
         public static void RemEntry(object sender, EventArgs arg) => Data.RemoveEntry(GUI.ChosenEntry);
 
-        public static void AddTag(object sender,EventArgs arg){}
+        public static void AddTag(object sender,EventArgs arg){
+            QuickInputBox.Create("Please enter a name for the new tag", delegate (string s, bool ok){
+                if (!ok) return;
+                Data.NewTag(s);
+            },"",null,"[A-Za-z0-9_]*");
+        }
         public static void RenTag(object sender,EventArgs arg){}
         public static void RemTag(object sender,EventArgs arg){}
 
