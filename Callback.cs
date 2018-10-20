@@ -139,9 +139,11 @@ namespace ScenLang
                 if (!ok) return;
                 var e = Data.GetEntry(GUI.ChosenEntry);
                 e.RenameTag(renameoriginal, s);
-            }, "", GUI.win, "[A-Za-z0-9_]*");
+            }, renameoriginal, GUI.win, "[A-Za-z0-9_]*");
         }
-        public static void RemTag(object sender,EventArgs arg){}
+        public static void RemTag(object sender,EventArgs arg){
+
+        }
 
         public static void IMKL()
         {
