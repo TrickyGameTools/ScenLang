@@ -242,6 +242,7 @@ namespace ScenLang
             newpage.Clicked += Callback.InsertPage;
             prvpage.Clicked += delegate (object s, EventArgs a) { if (Data.Page > 0) Data.PickBox(Data.Page - 1); };
             nxtpage.Clicked += Callback.NextPage;
+            rempage.Clicked += Callback.KillPage;
             pagebox.Add(newpage);
             pagebox.Add(rempage);
             pagebox.Add(prvpage);

@@ -168,5 +168,15 @@ namespace ScenLang
                 Data.PickBox(Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).CountTextBoxes);
             }
         }
+
+        public static void KillPage(object sender,EventArgs a){
+            if (Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).CountTextBoxes<=1){
+                QuickGTK.Error("A tag must have at least 1 page!");
+                return;
+            }
+            if (!QuickGTK.Confirm("Do you really want to kill this scenario page?")) return;
+            Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).KillTextBox(Data.Page);
+            Data.PickBox(0);
+        }
     }
 }

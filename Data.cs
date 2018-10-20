@@ -81,6 +81,13 @@ namespace ScenLang
             Console.WriteLine("Ok!");
             GUI.WriteLn("Textbox inserted!");
         }
+        public void KillBox(int p){
+            var num = CountTextBoxes;
+            for (int i = p; i < num;i++) TextBox[i] = TextBox[i + 1];
+            TextBox.Remove(num);
+        }
+
+
     }
 
     public class DataEntry
