@@ -345,6 +345,16 @@ namespace ScenLang{
             GUI.UPDATEENTRIES();
         }
 
+        static public void NewTag(string nt){
+            var tag = nt.ToUpper();
+            var e = Entry[GUI.ChosenEntry];
+            if (e.ContainsTag(tag) && (!QuickGTK.Confirm($"Within entry \"{GUI.ChosenEntry}\" a tag named \"{tag}\" already exists!\nDo you want to create a new tag with that name destroying the old one?"))) return;
+            e.AddTag(tag, new DataTag());
+            var t = e.GetTag(tag);
+            t.NewTextBox(0);
+            if (!e.TagList.Contains(tag)) { e.TagList.Add(tag); e.TagList.Sort(); }
+        }
+
 
     }
 
