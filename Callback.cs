@@ -142,7 +142,10 @@ namespace ScenLang
             }, renameoriginal, GUI.win, "[A-Za-z0-9_]*");
         }
         public static void RemTag(object sender,EventArgs arg){
-
+            if (!QuickGTK.Confirm($"Do you really want to delete {GUI.ChosenTag} from {GUI.ChosenEntry}?")) return;
+            Data.GetEntry(GUI.ChosenEntry).RemoveTag(GUI.ChosenTag);
+            Data.GetEntry(GUI.ChosenEntry).ReDoTagList();
+            GUI.UpdateTagList();
         }
 
         public static void IMKL()
