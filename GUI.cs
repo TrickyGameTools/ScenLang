@@ -48,6 +48,7 @@ namespace ScenLang
         public static Entry enAltFont;
         public static CheckButton tbAllowTrim;
         public static CheckButton tbNameLinking;
+        public static Label PaginationLabel;
 
         public static Entry[] EntryHead;
         public static TextView[] EntryText;
@@ -218,7 +219,7 @@ namespace ScenLang
             var newpage = new Button("Insert"); requiretag.Add(newpage);
             var rempage = new Button("Destroy"); requiretag.Add(rempage);
             var prvpage = new Button("<"); requiretag.Add(prvpage);
-            var labpage = new Label("--/--");
+            var labpage = new Label("--/--"); PaginationLabel = labpage;
             var nxtpage = new Button(">"); requiretag.Add(nxtpage);
             newpage.ModifyBg(StateType.Normal, RGB(18, 25, 0));
             rempage.ModifyBg(StateType.Normal, RGB(25, 0, 0));

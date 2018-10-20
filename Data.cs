@@ -22,15 +22,17 @@
 // 	to the project the exceptions are needed for.
 // Version: 18.10.20
 // EndLic
-﻿using System;
+using System;
 using TrickyUnits;
 using TrickyUnits.GTK;
 using UseJCR6;
 using System.Collections.Generic;
 
-namespace ScenLang{
+namespace ScenLang
+{
 
-    class DataTextbox{
+    class DataTextbox
+    {
         // The int in the dictionaries is the language ID, not the page number!
         public Dictionary<int, string> Head = new Dictionary<int, string>();
         public Dictionary<int, string> Content = new Dictionary<int, string>();
@@ -40,8 +42,10 @@ namespace ScenLang{
         public bool AllowTrim = true;
         public bool NameLinking = true;
 
-        public DataTextbox(){
-            for (int i = 0; i < Data.NumLanguages;i++){
+        public DataTextbox()
+        {
+            for (int i = 0; i < Data.NumLanguages; i++)
+            {
                 Head[i] = "";
                 Content[i] = "";
             }
@@ -49,11 +53,20 @@ namespace ScenLang{
 
     }
 
-    public class DataTag{
+    public class DataTag
+    {
         // And in this dictionary the 'int' is the page number... Seems odd, but is not as odd as it seems.
         Dictionary<int, DataTextbox> TextBox = new Dictionary<int, DataTextbox>();
         public void NewTextBox(int i) { TextBox[i] = new DataTextbox(); }
         public object GetTextBox(int i) => TextBox[i];
+        public int CountTextBoxes {
+            get {
+                var r = 0;
+                foreach (int i in TextBox.Keys) if (i > r) r = i;
+                return r;
+            }
+
+        }
 
     }
 
@@ -317,6 +330,7 @@ namespace ScenLang{
             Callback.dontedit = true;
             Callback.dontlink = true;
             _page = page;
+            GUI.PaginationLabel.Text = $"{_page+1}/{GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).CountTextBoxes+1}";
             var t = (DataTextbox)Data.GetEntry(GUI.ChosenEntry).GetTag(GUI.ChosenTag).GetTextBox(0);
             var atrim = true;
             var alink = true;
