@@ -40,6 +40,13 @@ namespace ScenLang{
         public bool AllowTrim = true;
         public bool NameLinking = true;
 
+        public DataTextbox(){
+            for (int i = 0; i < Data.NumLanguages;i++){
+                Head[i] = "";
+                Content[i] = "";
+            }
+        }
+
     }
 
     public class DataTag{
