@@ -198,6 +198,7 @@
     <Compile Include="Export\Export_AA_Main.cs" />
     <Compile Include="Export\XJSON.cs" />
     <Compile Include="Export\XML.cs" />
+    <Compile Include="Export\XPython.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />

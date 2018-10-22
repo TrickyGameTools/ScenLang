@@ -61,7 +61,7 @@ namespace ScenLang.Export
                     foreach (int taal in TB.Head.Keys ){
                         ret += ",\n";
                         ret += $"\t\t\t\"{Data.LanguagePure(taal)}.Head\" : \"{TB.Head[taal]}\",\n";
-                        ret += $"\t\t\t\"{Data.LanguagePure(taal)}.Content\" : `{TB.Content[taal]}`";
+                        ret += $"\t\t\t\"{Data.LanguagePure(taal)}.Content\" : \"{qstr.SafeString(TB.Content[taal])}\"";
                     }
                     ret += "\t\t}";
                 }
