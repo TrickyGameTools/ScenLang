@@ -36,7 +36,7 @@ namespace ScenLang.Export
             var ret = "";
             foreach(string E in Data.Entries){
                 if (ret != "") ret += ",\n";
-                ret += $"\t[\"{E}\"] : {TabIt(Entry(E))}";
+                ret += $"\t\"{E}\" : {TabIt(Entry(E))}";
             }
             return "{"+ret+"}";
         }
