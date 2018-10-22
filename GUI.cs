@@ -110,6 +110,7 @@ namespace ScenLang
         static void CreateSubMainBox(){
             submainbox = new HBox();
             statusconsole = new TextView();
+            var statusconsolescroll = new ScrolledWindow();
             WriteLn($"ScenLang v{MKL.Newest}");
             WriteLn("Coded by: Tricky");
             WriteLn($"(c) Jeroen P. Broks, 2015-20{qstr.Left(MKL.Newest,2)} released under the terms of the GPL\n\nProject: {Data.Project}");
@@ -118,7 +119,8 @@ namespace ScenLang
             statusconsole.ModifyText(StateType.Normal, RGB(250, 180, 0));
             statusconsole.ModifyBase(StateType.Normal,RGB(25, 18, 0));
             mainbox.Add(submainbox);
-            mainbox.Add(statusconsole);
+            statusconsolescroll.Add(statusconsole);
+            mainbox.Add(statusconsolescroll);
         }
 
         static void CreateEntryList(){
