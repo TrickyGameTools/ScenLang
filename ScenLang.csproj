@@ -195,10 +195,13 @@
     <Compile Include="..\TrickyUnits\gtk\inputdialog.cs">
       <Link>Dependencies\TrickyUnits\gtk\inputdialog.cs</Link>
     </Compile>
+    <Compile Include="Export\Export_AA_Main.cs" />
+    <Compile Include="Export\XJSON.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />
     <Folder Include="Assets\" />
+    <Folder Include="Export\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
