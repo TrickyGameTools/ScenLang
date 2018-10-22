@@ -141,6 +141,7 @@ namespace ScenLang.Export
             Drivers["JSON"] = new XJSON();
             Drivers["XML"] = new XXML();
             Drivers["Python"] = new XPython();
+            Drivers["Lua"] = new XLua();
         }
     }
 }

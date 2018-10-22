@@ -199,6 +199,7 @@
     <Compile Include="Export\XJSON.cs" />
     <Compile Include="Export\XML.cs" />
     <Compile Include="Export\XPython.cs" />
+    <Compile Include="Export\XLua.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dependencies\" />
