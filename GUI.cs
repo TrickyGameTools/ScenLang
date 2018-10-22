@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.20
+// Version: 18.10.22
 // EndLic
 ﻿using System;
 using System.Reflection;
@@ -43,6 +43,7 @@ namespace ScenLang
         static HBox headbox;
         static HBox editbox;
         static ListBox taglist;
+        static public Button bExport;
         public static Entry enPicDir;
         public static Entry enPicSpecific;
         public static Entry enAltFont;
@@ -148,6 +149,12 @@ namespace ScenLang
             m.SetSizeRequest(230, 25);
             requirefile.Add(ren);
             requirefile.Add(rem);
+            bExport = new Button("Export");
+            bExport.Clicked += Callback.OpenExport;
+            bExport.ModifyBg(StateType.Normal,RGB(0, 0, 25));
+            bExport.ModifyBg(StateType.Prelight,RGB(0, 0, 255));
+            bExport.Child.ModifyFg(StateType.Normal, RGB(0, 0, 255));
+            bExport.Child.ModifyFg(StateType.Prelight, RGB(0, 0, 0));
             Assembly asm = Assembly.GetExecutingAssembly();
             System.IO.Stream stream;
             //= asm.GetManifestResourceStream("MyData.Properties.Icon.png");
@@ -164,6 +171,7 @@ namespace ScenLang
             var lb = new VBox();
             lb.Add(sw);
             lb.Add(m);
+            lb.Add(bExport);
             lb.Add(mascot);
             submainbox.Add(lb);
         }
@@ -465,7 +473,7 @@ namespace ScenLang
 
         public static void init(string[] args)
         {
-            MKL.Version("Scenario Language - GUI.cs","18.10.20");
+            MKL.Version("Scenario Language - GUI.cs","18.10.22");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }

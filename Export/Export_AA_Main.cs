@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using Gtk;
 using TrickyUnits;
 using TrickyUnits.GTK;
+using UseJCR6;
 
 namespace ScenLang.Export
 {
@@ -34,29 +35,84 @@ namespace ScenLang.Export
         abstract public string Whole();
         abstract public string Entry(string tag);
         abstract public string extension();
+
+        public string TabIt(string str){
+            var s = str.Split('\n');
+            var ret = "";
+            foreach(string line in s){
+                ret += $"\t{line}\n";
+            }
+            return ret;
+        }
     }
 
     static class Export
     {
-        public static Dictionary<string,XCLASS> Drivers = new Dictionary<string,XCLASS>();
+        public static SortedDictionary<string,XCLASS> Drivers = new SortedDictionary<string,XCLASS>();
+        static Window win;
+        static ListBox ExportTo;
+        static RadioButton ToJCR;
+        static RadioButton ToDir;
+        static CheckButton lzma;
+        static string Storage { get { if (lzma.Active) return "lzma"; return "Store"; }}
 
         static void DoExport(object sender,EventArgs e){
+            if (ExportTo.ItemText == "") { QuickGTK.Error("I do need a target type to export to!"); return; }
+            var xd = Drivers[ExportTo.ItemText];
+            if (ToJCR.Active) {
+                var of = QuickGTK.RequestFileSave("Output JCR File"); if (of == "") return;
+                if (!qstr.Suffixed(of.ToLower(), ".jcr")) of += ".jcr";
+                var oj = new TJCRCreate(of, Storage);
 
+                foreach (string E in Data.Entries){
+                    GUI.WriteLn($"Exporting: {E}");
+                    oj.AddString(xd.Entry(E), $"{E}.{xd.extension()}", Storage);
+                    if (JCR6.JERROR != "") QuickGTK.Error("Something went wrong during exporting:\n" + JCR6.JERROR);
+                }
+                oj.Close();
+                GUI.WriteLn($"Exported: {of}");
+            } else if (ToDir.Active) {
+                var of = QuickGTK.RequestDir();
+                if (of == "") return;
+                if (!QuickGTK.Confirm("Please note, any existing files in the chosen directory will be mercilessly overwritten if the name matches with any file that will be exported!\n\nAre you sure you wish to continue?")) return;
+                foreach (string E in Data.Entries){
+                    GUI.WriteLn($"Exporting: {of}/{E}.{xd.extension()}");
+                    var p = System.IO.Path.GetDirectoryName($"{of}/{E}");
+                    System.IO.Directory.CreateDirectory(p);
+                    QOpen.SaveString($"{of}/{E}.{xd.extension()}", xd.Entry(E));
+                }
+            } else {
+                var of = QuickGTK.RequestFileSave($"Save this to {xd.extension()} file:");
+                if (of == "") return;
+                if (!qstr.Suffixed(of.ToLower(), $".{xd.extension()}")) of += $".{xd.extension()}";
+                GUI.WriteLn($"Exporting to file: {of}");
+                QOpen.SaveString(of, xd.Whole());
+            }
+            win.Destroy();
+            GUI.bExport.Sensitive = true;
+        }
+
+
+        static void CancelExport(object sender, EventArgs e){
+            win.Destroy();
+            GUI.bExport.Sensitive = true;
         }
 
         // Alternate GUI
         static public void Go()
         {
-            Window win = new Window("Export");
-            ListBox ExportTo = new ListBox();
-            RadioButton ToDir = new RadioButton("Directory");
-            ScrolledWindow ToDirScroll = new ScrolledWindow(); ToDirScroll.Add(ToDir);
-            RadioButton ToJCR = new RadioButton("JCR package");
-            RadioButton ToFile = new RadioButton("Complete script file");
-            CheckButton lzma = new CheckButton("lzma compression (JCR package only)"); lzma.Active = true;
+            GUI.bExport.Sensitive = false;
+            win = new Window("Export");
+            ExportTo = new ListBox();
+            ToDir = new RadioButton("Directory"); ToDir.Active = false;
+            ScrolledWindow ToDirScroll = new ScrolledWindow(); ToDirScroll.Add(ExportTo.Gadget);
+            foreach (string drv in Drivers.Keys) ExportTo.AddItem(drv);
+            ToJCR = new RadioButton(ToDir,"JCR package"); ToJCR.Active = true;
+            RadioButton ToFile = new RadioButton(ToDir,"Complete script file"); ToJCR.Active = false;
+            lzma = new CheckButton("lzma compression (JCR package only)"); lzma.Active = true;
             Button Cancel = new Button("Cancel");
             Button ok = new Button("Ok");
-            VBox Main = new VBox(); Main.Add(win);
+            VBox Main = new VBox(); win.Add(Main);
             HBox bexportto = new HBox();
             bexportto.Add(new Label("Export to:"));
             bexportto.Add(ToDirScroll);
@@ -71,6 +127,12 @@ namespace ScenLang.Export
             Buttons.Add(Cancel);
             Buttons.Add(ok);
             ok.Clicked += DoExport;
+            win.DeleteEvent += CancelExport;
+            Cancel.Clicked += CancelExport;
+            Main.Add(bexportto);
+            Main.Add(XType);
+            Main.Add(Bottom);
+            win.ShowAll();
         }
 
         public static void Init(){
