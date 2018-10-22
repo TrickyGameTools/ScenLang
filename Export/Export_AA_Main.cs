@@ -139,6 +139,7 @@ namespace ScenLang.Export
             MKL.Version("Scenario Language - Export_AA_Main.cs","18.10.22");
             MKL.Lic    ("Scenario Language - Export_AA_Main.cs","GNU General Public License 3");
             Drivers["JSON"] = new XJSON();
+            Drivers["XML"] = new XXML();
         }
     }
 }
