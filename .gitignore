@@ -6,6 +6,7 @@
 [Bb]in/
 packages/
 TestResults/
+*.app
 
 # globs
 Makefile.in
@@ -48,3 +49,7 @@ Assets/Mascot.png
 # MKL
 MKL*
 *MKL*
+
+# Mac Crap
+.DS_Store
+._*
