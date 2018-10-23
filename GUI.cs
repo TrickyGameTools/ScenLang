@@ -157,6 +157,12 @@ namespace ScenLang
             bExport.ModifyBg(StateType.Prelight,RGB(0, 0, 255));
             bExport.Child.ModifyFg(StateType.Normal, RGB(0, 0, 255));
             bExport.Child.ModifyFg(StateType.Prelight, RGB(0, 0, 0));
+            Button Save = new Button("Save");
+            Save.Clicked += Callback.Save;
+            Save.ModifyBg(StateType.Normal, RGB(0, 0, 25));
+            Save.ModifyBg(StateType.Prelight, RGB(0, 0, 255));
+            Save.Child.ModifyFg(StateType.Normal, RGB(0, 0, 255));
+            Save.Child.ModifyFg(StateType.Prelight, RGB(0, 0, 0));
             Assembly asm = Assembly.GetExecutingAssembly();
             System.IO.Stream stream;
             //= asm.GetManifestResourceStream("MyData.Properties.Icon.png");
@@ -174,6 +180,7 @@ namespace ScenLang
             lb.Add(sw);
             lb.Add(m);
             lb.Add(bExport);
+            lb.Add(Save);
             lb.Add(mascot);
             submainbox.Add(lb);
         }

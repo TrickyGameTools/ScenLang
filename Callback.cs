@@ -20,7 +20,7 @@
 // 		
 // 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
 // 	to the project the exceptions are needed for.
-// Version: 18.10.22
+// Version: 18.10.23
 // EndLic
 
 ﻿using System;
@@ -36,7 +36,7 @@ namespace ScenLang
 
         public static void IMKL()
         {
-            MKL.Version("Scenario Language - Callback.cs","18.10.22");
+            MKL.Version("Scenario Language - Callback.cs","18.10.23");
             MKL.Lic    ("Scenario Language - Callback.cs","GNU General Public License 3");
         }
 
@@ -183,5 +183,7 @@ namespace ScenLang
         }
 
         public static void OpenExport(object sender, EventArgs a) => Export.Export.Go();
+
+        public static void Save(object sender, EventArgs a) => Data.Save();
     }
 }
