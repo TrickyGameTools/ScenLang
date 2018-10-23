@@ -37,7 +37,7 @@ namespace ScenLang
         public Dictionary<int, string> Head = new Dictionary<int, string>();
         public Dictionary<int, string> Content = new Dictionary<int, string>();
         public string Picture = "";
-        public string PictureSpecific = "";
+        public string PictureSpecific = "GENERAL";
         public string AltFont = "";
         public bool AllowTrim = true;
         public bool NameLinking = true;
