@@ -281,6 +281,9 @@ namespace ScenLang
                                     GUI.Assert(id == 0 || tb.PictureSpecific == s, "Picture specific mismatch");
                                     tb.PictureSpecific = s;
                                     break;
+                                case '%':
+                                    tb.AltFont = s;
+                                    break;
                                 case '#':
                                     if (tb.Content[id] != "") tb.Content[id] += "\n";
                                     tb.Content[id] += s;
