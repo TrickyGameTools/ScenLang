@@ -1,0 +1,45 @@
+#!/bin/sh
+echo "- Building ScenLang"
+msbuild ../ScenLang.sln /p:Configuration=Release
+echo Copying to Windows and Linux release folder
+cp ../../bin/Release/ScenLang.exe WindowsLinux
+
+echo "- Creating Mac bundle"
+MACBUNDLE=Mac/ScenLang.app
+PUREMACAPP=ScenLang
+
+#echo Mac application creation script
+#echo ===============================
+
+if [ -d "$MACBUNDLE" ]; then
+   echo "  = Destroying old version";
+   rm -Rv "$MACBUNDLE"
+fi
+
+#if [ "$1" != "skipcompile" ]; then
+#   echo "Compiling $PUREMACAPP"
+#   msbuild "-p:Configuration=Release;WarningLevel=0" ../$PUREMACAPP.sln
+#fi
+
+
+echo "  = Creating bundle folders"
+mkdir "$MACBUNDLE"
+mkdir "$MACBUNDLE/Contents"
+mkdir "$MACBUNDLE/Contents/MacOS"
+mkdir "$MACBUNDLE/Contents/Resources"
+
+
+echo "  = Copying info"
+cp -v "Info.plist" "$MACBUNDLE/Contents"
+
+echo "  = Copying icon"
+cp -v "TorenVanBabel.icns" "$MACBUNDLE/Contents/Resources/ScenLang.icns"
+
+echo "  = Copying binaries"
+cp -Rv "../bin/Release/"* "$MACBUNDLE/Contents/MacOS"
+
+echo "  = Copying startup file"
+cp -v "RunShell.sh" "$MACBUNDLE/Contents/MacOS/$PUREMACAPP"
+chmod +x "$MACBUNDLE/Contents/MacOS/$PUREMACAPP"
+
+echo "If no errors (I said ERRORS not WARNINGS!!!) everything SHOULD be in order"
