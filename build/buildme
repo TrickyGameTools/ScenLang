@@ -2,7 +2,7 @@
 echo "- Building ScenLang"
 msbuild ../ScenLang.sln /p:Configuration=Release
 echo Copying to Windows and Linux release folder
-cp ../../bin/Release/ScenLang.exe WindowsLinux
+cp ../bin/Release/ScenLang.exe WindowsLinux
 
 echo "- Creating Mac bundle"
 MACBUNDLE=Mac/ScenLang.app
