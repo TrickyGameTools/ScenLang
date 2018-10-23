@@ -418,6 +418,7 @@ namespace ScenLang
             var t = e.GetTag(tag);
             t.NewTextBox(0);
             if (!e.TagList.Contains(tag)) { e.TagList.Add(tag); e.TagList.Sort(); }
+            GUI.UpdateTagList();
         }
 
 
