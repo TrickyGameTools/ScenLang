@@ -78,6 +78,7 @@ namespace ScenLang
                 if (w.GetType() == typeof(TextView) && ((TextView)w).Buffer == t) ret = w;
             }
             Assert(ret != null, "Tried to find and index of an unindex widget");
+            AutoEnable();
             return ret;
         }
 
@@ -87,6 +88,7 @@ namespace ScenLang
                 entrylist.AddItem(k);
                 Console.WriteLine($"UE: {k}");
             }
+            AutoEnable();
         }
 
         static void CreateWindow(){
@@ -477,6 +479,7 @@ namespace ScenLang
             foreach (string k in tl){
                 taglist.AddItem(k);
             }
+            AutoEnable();
         }
 
 
