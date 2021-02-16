@@ -1,32 +1,34 @@
 // Lic:
-// 	Scenario Language
-// 	Data
-// 	
-// 	
-// 	
-// 	(c) Jeroen P. Broks, 2015, 2017, 2018, All rights reserved
-// 	
-// 		This program is free software: you can redistribute it and/or modify
-// 		it under the terms of the GNU General Public License as published by
-// 		the Free Software Foundation, either version 3 of the License, or
-// 		(at your option) any later version.
-// 		
-// 		This program is distributed in the hope that it will be useful,
-// 		but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 		GNU General Public License for more details.
-// 		You should have received a copy of the GNU General Public License
-// 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 		
-// 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
-// 	to the project the exceptions are needed for.
-// Version: 18.10.23
+// Scenario Language
+// Data management
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 2015, 2017, 2018, 2021
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 21.02.16
 // EndLic
 using System;
 using TrickyUnits;
 using TrickyUnits.GTK;
 using UseJCR6;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ScenLang
 {
@@ -39,6 +41,7 @@ namespace ScenLang
         public string Picture = "";
         public string PictureSpecific = "GENERAL";
         public string AltFont = "";
+        public string Audio = "";
         public bool AllowTrim = true;
         public bool NameLinking = true;
 
@@ -98,8 +101,7 @@ namespace ScenLang
         public bool ContainsTag(string tag) => Tags.ContainsKey(tag.ToUpper());
         public void AddTag(string tag, DataTag data) { Tags[tag.ToUpper()] = data; }
         public DataTag GetTag(string tag) => Tags[tag];
-        public void ReDoTagList()
-        {
+        public void ReDoTagList() {
             var tl = TagList;
             tl.Clear();
             foreach (string tag in Tags.Keys) tl.Add(tag);
@@ -116,6 +118,27 @@ namespace ScenLang
             //t.NewTextBox(0);
             ReDoTagList();
             GUI.UpdateTagList();
+        }
+
+        public void MoveTag(string tag, string entry) {
+            tag = tag.ToUpper();
+            entry = entry.ToUpper();
+            var edata = Data.SafeGetEntry(entry);
+            if (edata==null) {
+                QuickGTK.Error($"There is no entry named \"{entry}\"!");
+                return;
+            }
+            if (entry.Contains(tag)) {
+                QuickGTK.Error($"Entry \"{entry}\" already has a scenario tagged \"{tag}\"");
+                return;
+            }
+            if (!ContainsTag(tag)) {
+                QuickGTK.Error($"Source entry has no scenario tagged \"{tag}\"");
+                return;
+            }
+            edata.AddTag(tag,GetTag(tag));
+            RemoveTag(tag);
+            edata.ReDoTagList();
         }
 
     }
@@ -138,6 +161,14 @@ namespace ScenLang
         static public int Page { get => _page; }
         static string savestorage { get { if (MainConfig.C("LZMA") == "NO") return "Store"; return "lzma"; }}
         //static Dictionary<string, List<string>> TagList = new Dictionary<string, List<string>>();
+
+        public static DataEntry SafeGetEntry(string e) {
+            e = e.ToUpper();
+            if (Entry.ContainsKey(e))
+                return Entry[e];
+            else
+                return null;
+        }
 
         /// <summary>
         /// The only reason this was added the way it is, is because the guys at Microsoft are completely demented and will not allow me to do this the CLEAN and QUICK way as that will cause the C# compiler to throw errors for reasons that do not exist, but C# only makes them exist for intentions that are beyond any brain of INTELLIGENT human beings!
@@ -180,7 +211,7 @@ namespace ScenLang
         static Data()
         {
             MKL.Lic    ("Scenario Language - Data.cs","GNU General Public License 3");
-            MKL.Version("Scenario Language - Data.cs","18.10.23");
+            MKL.Version("Scenario Language - Data.cs","21.02.16");
         }
 
         static public void LoadFromArgs(string[] args){
@@ -213,7 +244,7 @@ namespace ScenLang
                 tm = en.TagList;
             }
             GUI.Assert(tm != null, $"Internal Error!\nNull for tagmap received when parsing {EntryName} for language #{id}.");
-            var ctag = "CRASH";
+            var ctag = "[REM]";
             var J = JCR[id];
             GUI.Assert(J.Exists(EntryName), $"Entry {EntryName} not found in language #{id}");
             foreach(string tl in J.ReadLines(EntryName,true)){
@@ -229,7 +260,7 @@ namespace ScenLang
                     switch(ctag){
                         case "CRASH":
                             Console.WriteLine($"{qstr.Left(l,1)} ... {qstr.Right(l, 1)} => {l} len: {l.Length}");
-                            GUI.Assert(false, $"Tagless command in language #{id} entry {EntryName}\n\n{l}");
+                            GUI.Assert(false, $"Tagless command in language #{id} entry {EntryName}\n\n\"{l}\"");
                             break;
                         case "[REM]":
                             break;
@@ -241,7 +272,7 @@ namespace ScenLang
                                     tm.Add(l.ToUpper());
                             } else {
                                 if (!tm.Contains(l.ToUpper())) {
-                                    QuickGTK.Warn("Language #{id} contains the non-existent tag {l}.\n\nI will continue, but do expect crashes!");
+                                    QuickGTK.Warn($"Language #{id} contains the non-existent tag {l}.\n\nI will continue, but do expect crashes!");
                                 }
                             }
                             break;
@@ -273,7 +304,14 @@ namespace ScenLang
                                     tb.Head[id] = s;
                                     break;
                                 case '*':
-                                    GUI.Assert(id == 0 || tb.Picture == s, $"Picture mismatch!\n{id}:{tt}\n{tb.Picture}!={s}");
+                                    //GUI.Assert(id == 0 || tb.Picture == s, $"Picture mismatch!\n{id}:{tt}\n{tb.Picture}!={s}");
+                                    if (!(id == 0 || tb.Picture == s)) {
+                                        if (QuickGTK.Confirm( $"Picture mismatch!\n{id}:{tt}\n{tb.Picture}!={s}\n\nAuto-adept?")) {
+                                            tb.Picture = s;
+                                        } else {
+                                            Environment.Exit(100);
+                                        }
+                                    }
                                     tb.Picture = s;
                                     Console.WriteLine($"Defined Picture\n{id}:{tt}\n{tb.Picture}");
                                     break;
@@ -287,6 +325,9 @@ namespace ScenLang
                                 case '#':
                                     if (tb.Content[id] != "") tb.Content[id] += "\n";
                                     tb.Content[id] += s;
+                                    break;
+                                case '$':
+                                    tb.Audio = s;
                                     break;
                                 default:
                                     GUI.Fail($"Unknown scenario tag {c}");
@@ -375,6 +416,7 @@ namespace ScenLang
             GUI.enAltFont.Text = t.AltFont;
             GUI.tbAllowTrim.Active = t.AllowTrim;
             GUI.tbNameLinking.Active = t.NameLinking;
+            GUI.enAudio.Text = t.Audio;
             GUI.AutoEnable();
             Callback.dontedit = false;
             Callback.dontlink = false;
@@ -408,6 +450,7 @@ namespace ScenLang
             Entry.Remove(pentry);
             _entries = null;
             GUI.UPDATEENTRIES();
+            Callback.modified = true;
         }
 
         static public void NewTag(string nt){
@@ -421,6 +464,23 @@ namespace ScenLang
             GUI.UpdateTagList();
         }
 
+        static string Clean(StringBuilder toclean, string namestring = "The Nameless One") {
+            var cleaned = new StringBuilder("");
+            var unclean = 0;
+            for(int i = 0; i < toclean.Length; ++i) {
+                if ((toclean[i] <= 31 || toclean[i] >= 127) && toclean[i]!=10)
+                    unclean++;
+                else
+                    cleaned.Append((char)toclean[i]);
+            }
+            if (unclean > 0) QuickGTK.Warn($"There were {unclean} Non-ASCII characters found in string \"{namestring}\"\nThese have all been removed");
+            var pure = $"{cleaned}";
+            var corrected = pure.Replace("!seelahgandra", "Seelah Gandra");
+            if (corrected != pure) { QuickGTK.Warn($"The !seelahgandra tag was found! Leftover from old times? Anyway I replaced it with \"Seelah Gandra\", in string \"{namestring}\""); pure = corrected; }
+            corrected = pure.Replace("!scyndi", "Scyndi");
+            if (corrected != pure) { QuickGTK.Warn($"The !scyndi tag was found! Leftover from old times? Anyway I replaced it with \"Scyndi\", in string \"{namestring}\""); pure = corrected; }
+            return pure;
+        }
 
         static public void Save(){
             var dt = DateTime.Now;
@@ -430,30 +490,32 @@ namespace ScenLang
                 Console.WriteLine("Saving: " + outfile);
                 var jo = new TJCRCreate(outfile, savestorage);
                 foreach (string E in Entry.Keys){
-                    var outstring = $"[rem]\nFile Generated By ScenLang\n(c) Copyright {dt.Year.ToString()} {MainConfig.C("Copyright")}\n{MainConfig.C("License")}\n\n\n[tags]\n";
+                    var outstring = new StringBuilder( $"[rem]\nFile Generated By ScenLang\n(c) Copyright {dt.Year.ToString()} {MainConfig.C("Copyright")}\n{MainConfig.C("License")}\n\n\n[tags]\n");
                     var myE = Entry[E];
-                    foreach (string tag in myE.TagList) outstring += $"{tag}\n";
-                    outstring += "\n\n[scenario]";
+                    foreach (string tag in myE.TagList) outstring.Append( $"{tag}\n");
+                    outstring.Append("\n\n[scenario]");
                     foreach (string tag in myE.TagList){
-                        outstring += "\n\n-- Scenario for tag: " + tag + "\n";
+                        outstring.Append("\n\n-- Scenario for tag: " + tag + "\n");
                         var MyT = myE.GetTag(tag);
                         var MyCount = MyT.CountTextBoxes;
                         for (int tbi = 0; tbi <= MyCount;tbi++){
                             var MyTB = (DataTextbox)MyT.GetTextBox(tbi);
-                            outstring += $"@{tag}\n";
-                            outstring += $"!{MyTB.Head[i]}\n";
-                            outstring += $"*{MyTB.Picture}\n";
-                            outstring += $":{MyTB.PictureSpecific}\n";
-                            outstring += $"%{MyTB.AltFont}\n";
+                            outstring.Append( $"@{tag}\n");
+                            outstring.Append($"!{MyTB.Head[i]}\n");
+                            outstring.Append($"*{MyTB.Picture}\n");
+                            outstring.Append($":{MyTB.PictureSpecific}\n");
+                            outstring.Append($"%{MyTB.AltFont}\n");
+                            outstring.Append($"${MyTB.Audio}\n");
                             var scontent = MyTB.Content[i].Split('\n');
-                            foreach (string line in scontent) outstring += $"#{line}\n";
+                            foreach (string line in scontent) outstring.Append($"#{line}\n");
                         }
                     }
-                    jo.AddString(outstring, E, savestorage, MainConfig.C("Author"), MainConfig.C("Notes"));
+                    jo.AddString(Clean(outstring,E), E, savestorage, MainConfig.C("Author"), MainConfig.C("Notes"));
                 }
                 jo.Close();
             }
             GUI.WriteLn("Complete");
+            Callback.modified = false;
         }
 
 

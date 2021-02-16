@@ -1,28 +1,29 @@
 // Lic:
-// 	Scenario Language
-// 	GUI getup and management
-// 	
-// 	
-// 	
-// 	(c) Jeroen P. Broks, 2015, 2017, 2018, All rights reserved
-// 	
-// 		This program is free software: you can redistribute it and/or modify
-// 		it under the terms of the GNU General Public License as published by
-// 		the Free Software Foundation, either version 3 of the License, or
-// 		(at your option) any later version.
-// 		
-// 		This program is distributed in the hope that it will be useful,
-// 		but WITHOUT ANY WARRANTY; without even the implied warranty of
-// 		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// 		GNU General Public License for more details.
-// 		You should have received a copy of the GNU General Public License
-// 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// 		
-// 	Exceptions to the standard GNU license are available with Jeroen's written permission given prior 
-// 	to the project the exceptions are needed for.
-// Version: 18.10.23
+// Scenario Language
+// Graphic User Interface
+// 
+// 
+// 
+// (c) Jeroen P. Broks, 2015, 2017, 2018, 2021
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 
+// Please note that some references to data like pictures or audio, do not automatically
+// fall under this licenses. Mostly this is noted in the respective files.
+// 
+// Version: 21.02.16
 // EndLic
-﻿using System;
+???using System;
 using System.Reflection;
 using System.Collections.Generic;
 using Gtk;
@@ -46,6 +47,7 @@ namespace ScenLang
         static public Button bExport;
         public static Entry enPicDir;
         public static Entry enPicSpecific;
+        public static Entry enAudio;
         public static Entry enAltFont;
         public static CheckButton tbAllowTrim;
         public static CheckButton tbNameLinking;
@@ -208,27 +210,33 @@ namespace ScenLang
             var add = new Button("Add");
             var ren = new Button("Rename");
             var rem = new Button("Remove");
+            var mov = new Button("Move");
             add.Clicked += Callback.AddTag;
             ren.Clicked += Callback.RenTag;
             rem.Clicked += Callback.RemTag;
+            mov.Clicked += Callback.MovTag;
             add.ModifyBg(StateType.Normal, RGB(18, 25, 0));
             add.Child.ModifyFg(StateType.Normal, RGB(180, 255, 0));
             ren.ModifyBg(StateType.Normal, RGB(25, 18, 0));
             ren.Child.ModifyFg(StateType.Normal, RGB(255, 180, 0));
             rem.ModifyBg(StateType.Normal, RGB(25, 0, 0));
             rem.Child.ModifyFg(StateType.Normal, RGB(255, 0, 0));
+            mov.Child.ModifyFg(StateType.Normal, RGB(0, 0, 255));
             add.ModifyBg(StateType.Prelight, RGB(180, 255, 0));
             ren.ModifyBg(StateType.Prelight, RGB(255, 180, 0));
             rem.ModifyBg(StateType.Prelight, RGB(255, 0, 0));
             add.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
             ren.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
             rem.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
+            mov.ModifyBg(StateType.Insensitive, RGB(0, 0, 0));
             m.Add(add);
             m.Add(ren);
             m.Add(rem);
+            m.Add(mov);
             m.SetSizeRequest(230, 30);
             requiretag.Add(ren);
             requiretag.Add(rem);
+            requiretag.Add(mov);
             requirefile.Add(add);
             selbox.Add(m);
             headbox.Add(selbox);
@@ -268,6 +276,7 @@ namespace ScenLang
             pagebox.Add(labpage);
             pagebox.Add(nxtpage);
             sdata.Add(pagebox);
+
             // Picture dir
             var bxPicDir = new HBox();
             var lbPicDir = new Label("Picture Dir:");
@@ -301,6 +310,24 @@ namespace ScenLang
             bxPicSpecific.Add(lbPicSpecific);
             bxPicSpecific.Add(enPicSpecific);
             requiretag.Add(enPicSpecific);
+
+            // Audio
+            var bxAudio = new HBox();
+            var lbAudio = new Label("Audio:");
+            enAudio = new Entry();
+            enAudio.Changed += Callback.EditAudio;
+            enAudio.ModifyBase(StateType.Normal, RGB(0, 25, 0));
+            enAudio.ModifyText(StateType.Normal, RGB(180, 255, 0));
+            enAudio.ModifyBase(StateType.Insensitive, RGB(0, 18, 0));
+            enAudio.ModifyText(StateType.Insensitive, RGB(100, 120, 0));
+            lbAudio.SetAlignment((float).95, (float).5);
+            lbAudio.ModifyFg(StateType.Normal, RGB(180, 0, 255));
+            lbAudio.SetSizeRequest(200, 20);
+            enAudio.SetSizeRequest(200, 20);
+            bxAudio.Add(lbAudio);
+            bxAudio.Add(enAudio);
+            requiretag.Add(enAudio);
+
 
             // Allow Trimming
             var bxAllowTrim = new HBox();
@@ -359,6 +386,7 @@ namespace ScenLang
             // Merge it all together
             sdata.Add(bxPicDir);
             sdata.Add(bxPicSpecific);
+            sdata.Add(bxAudio);
             sdata.Add(bxAllowTrim);
             sdata.Add(bxNameLinking);
             sdata.Add(bxAltFont);
@@ -375,7 +403,10 @@ namespace ScenLang
             QuickGTK.Error($"FAILURE!\n\n{message}");
             success = false;
             if (failquit) Application.Quit();
-            throw new Exception(message);
+            var ex =  new Exception(message);
+            System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}\nTraceback:\n{ex.StackTrace}");
+            System.Console.WriteLine($"Error: {ex.Message}\nTraceback:\n{ex.StackTrace}");
+            throw ex;
         }
 
         public static bool Assert(bool condition,string error){
@@ -485,7 +516,7 @@ namespace ScenLang
 
         public static void init(string[] args)
         {
-            MKL.Version("Scenario Language - GUI.cs","18.10.23");
+            MKL.Version("Scenario Language - GUI.cs","21.02.16");
             MKL.Lic    ("Scenario Language - GUI.cs","GNU General Public License 3");
             Application.Init();
             Data.LoadFromArgs(args); if (!Data.Loaded) { QuickGTK.Error("Project file not properly loaded!\nExiting!"); return; }
@@ -507,8 +538,12 @@ namespace ScenLang
 
             // Timed save
             GLib.Timeout.Add(180000, delegate {
-                WriteLn("Autosave activated");
+                if (Callback.modified) { 
+                    WriteLn($"Autosave activated - {DateTime.Now}");
                 Data.Save();
+            } else {
+                    WriteLn($"No modifications - Autosave skipped - {DateTime.Now}");
+                }
                 return true;
             });
         }
