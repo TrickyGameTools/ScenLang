@@ -1,3 +1,8 @@
+# NOTICE!
+
+ScenLang is, as of today, deprecated. It will only be used to fix some errors in scenarios of older projects, but it will no longer be actively maintained.
+ScenLang will be replace by [Rosetta](https://github.com/TrickyGameTools/Rosetta), and that tool will also be used for my future projects.
+
 # ScenLang
 
 This is a simple tool I use myself to do the dual language scenarios for my RPG games.
