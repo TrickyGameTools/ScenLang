@@ -23,7 +23,8 @@
 // 
 // Version: 21.02.16
 // EndLic
-???using System;
+
+using System;
 using System.Reflection;
 using System.Collections.Generic;
 using Gtk;
@@ -537,7 +538,7 @@ namespace ScenLang
             AutoEnable();
 
             // Timed save
-            GLib.Timeout.Add(180000, delegate {
+            GLib.Timeout.Add(1800000, delegate {
                 if (Callback.modified) { 
                     WriteLn($"Autosave activated - {DateTime.Now}");
                 Data.Save();

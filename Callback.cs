@@ -24,7 +24,7 @@
 // Version: 21.02.16
 // EndLic
 
-???using System;
+using System;
 using Gtk;
 using TrickyUnits;
 using TrickyUnits.GTK;
@@ -35,7 +35,7 @@ namespace ScenLang
     static class Callback
     {
 
-        const string allow_RegEx = @"[A-Za-z0-9_\/\- ]*";
+        const string allow_RegEx = @"[A-Za-z0-9_\.\/\- ]*";
 
         public static void IMKL()
         {
@@ -173,7 +173,7 @@ namespace ScenLang
             QuickInputBox.Create("Please enter a name for the new tag", delegate (string s, bool ok){
                 if (!ok) return;
                 Data.NewTag(s);
-            },"",null,"[A-Za-z0-9_]*");
+            },"",null,@"[A-Za-z0-9_\.]*");
             modified = true;
         }
         public static void RenTag(object sender,EventArgs arg){
@@ -182,7 +182,7 @@ namespace ScenLang
                 if (!ok) return;
                 var e = Data.GetEntry(GUI.ChosenEntry);
                 e.RenameTag(renameoriginal, s);
-            }, renameoriginal, GUI.win, "[A-Za-z0-9_]*");
+            }, renameoriginal, GUI.win, @"[A-Za-z0-9_\.]*");
             modified = true;
         }
         public static void RemTag(object sender,EventArgs arg){
